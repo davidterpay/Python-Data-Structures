@@ -4,9 +4,10 @@ from Linked_List import LinkedList
 
 '''
 This is my implementation of a queue. A queue is a first in - first out data structure.
-Think of the queue as a line at Starbucks. The first person to get in line is the first person to get served; The last
-person in line is the last to be served. I used a doubly linked list as the the back end data structure to hold the data. 
-To check out the implementation of the linked list, look at the Linked_List folder. I utilized a linked list
+Think of the queue as a line at Starbucks. The first person to get in line is the first 
+person to get served; The last person in line is the last to be served. I used a 
+doubly linked list as the the back end data structure to hold the data. To check out 
+the implementation of the linked list, look at the Linked_List folder. I utilized a linked list
 class that I previously created.
 '''
 
@@ -20,8 +21,9 @@ class Queue():
             Queue
             
         We defined one class variables:
-        queue = A linked list, that is composed of variables such as size, nodes, and functionality that
-        can be seen in the linked list folder. The queue can automatically be initialized from an existing 
+        queue = A linked list, that is composed of variables such as size, 
+        nodes, and functionality that can be seen in the linked list folder. 
+        The queue can automatically be initialized from an existing 
         chain of nodes. Check out initializer() in the linked list class.
         '''
 
@@ -29,13 +31,15 @@ class Queue():
 
     def enque(self, data):
         '''
-        This function will appened a new node onto our queue. It appends it to the end of our stack
+        This function will appened a new node onto our queue. It appends it 
+        to the end of our stack
         INPUT:
             data = Data to be stored
         OUTPUT:
             queue with new node at the end
-        Runtime : O(1) -- Enque runs in constant time because all we are doing is appending a new node
-        to the back of our stack or our linked list. This takes constant time because we are using a doubly 
+        Runtime : O(1) -- Enque runs in constant time because all we are 
+        doing is appending a new node to the back of our stack or our 
+        linked list. This takes constant time because we are using a doubly 
         linked list as our linked list.
         '''
 
@@ -47,8 +51,9 @@ class Queue():
         INPUT: None
         OUTPUT:
             The data that will be deleted
-        Runtime : O(1) -- deque runs in constant time because all we are doing is deleting a existing node
-        from the front of our queue or our linked list. This takes constant time.
+        Runtime : O(1) -- deque runs in constant time because all 
+        we are doing is deleting a existing node from the front of 
+        our queue or our linked list. This takes constant time.
         '''
 
         data = self.queue.head.getData()
@@ -61,9 +66,11 @@ class Queue():
         INPUT: None
         OUTPUT:
             The size of our queue
-        Runtime : O(1) -- Size in constant time because all we are doing is returning a variable from the linked
-        list class. This is a instance variable part of the linked list class. It does not take time to find the
-        length of the linked list because we keep track of it through out the lifecycle of the linked list.
+        Runtime : O(1) -- Size in constant time because all 
+        we are doing is returning a variable from the linked list class. 
+        This is a instance variable part of the linked list class. It does 
+        not take time to find the length of the linked list because we keep 
+        track of it through out the lifecycle of the linked list.
         '''
 
         return self.queue.length
@@ -74,21 +81,25 @@ class Queue():
         INPUT: None
         OUTPUT:
             True if empty. False if not empty
-        Runtime : O(1) -- isEmpty runs in constant time because all we are doing is checking whether our length
-        is 0. This is a instance variable part of the linked list class. It does not take time to find the
-        length of the linked list because we keep track of it through out the lifecycle of the linked list.
+        Runtime : O(1) -- isEmpty runs in constant time because all we are 
+        doing is checking whether our length is 0. This is a instance variable 
+        part of the linked list class. It does not take time to find the
+        length of the linked list because we keep track of it through out 
+        the lifecycle of the linked list.
         '''
 
         return self.queue.length == 0
 
     def peek(self):
         '''
-        This function will return the first data point in our queue. It does not return the node, rather just the
-        data. It also does not remove the node from the list.
+        This function will return the first data point in our queue. It does 
+        not return the node, rather just the data. It also does not remove 
+        the node from the list.
         INPUT: None
         OUTPUT:
             Data in the first node.
-        Runtime : O(1) -- Peek runs in constant time because all we are doing is returning the data held in
+        Runtime : O(1) -- Peek runs in constant time because all we are doing 
+        is returning the data held in
         the first most node aka the head.
         '''
 
@@ -101,9 +112,11 @@ class Queue():
         INPUT: None
         OUTPUT:
             The size of our queue
-        Runtime : O(1) -- Size in constant time because all we are doing is returning a instance variable from the linked
-        list class. This is a instance variable part of the linked list class. It does not take time to find the
-        length of the linked list because we keep track of it through out the lifecycle of the linked list.
+        Runtime : O(1) -- Size in constant time because all we are doing 
+        is returning a instance variable from the linked list class. This 
+        is a instance variable part of the linked list class. It does not take 
+        time to find the length of the linked list because we keep track of it 
+        through out the lifecycle of the linked list.
         '''
 
         return len(self.queue)

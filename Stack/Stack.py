@@ -23,8 +23,9 @@ class Stack():
             Stack
 
         We defined one class variables:
-        stack = A linked list, that is composed of variables such as size, nodes, and functionality that
-        can be seen in the linked list folder. The head variable can automatically be initialized from an 
+        stack = A linked list, that is composed of variables such as size, nodes, 
+        and functionality that can be seen in the linked list folder. 
+        The head variable can automatically be initialized from an 
         existing chain of nodes. Check out initializer() in the linked list class.
         '''
 
@@ -38,8 +39,9 @@ class Stack():
         OUTPUT:
             Stack with new node on top
 
-        Runtime : O(1) -- Push runs in constant time because all we are doing is appending a new node
-        to the front of our stack or our linked list. This takes constant time.
+        Runtime : O(1) -- Push runs in constant time because all 
+        we are doing is appending a new node to the front of our stack or our linked list. 
+        This takes constant time.
         '''
 
         self.stack.addFront(data)
@@ -51,8 +53,9 @@ class Stack():
         OUTPUT:
             The data that will be deleted
 
-        Runtime : O(1) -- Pop runs in constant time because all we are doing is deleting a existing node
-        from the front of our stack or our linked list. This takes constant time.
+        Runtime : O(1) -- Pop runs in constant time because all we are doing 
+        is deleting a existing node from the front of our stack or our linked list. 
+        This takes constant time.
         '''
 
         topData = self.peek()
@@ -66,9 +69,11 @@ class Stack():
         OUTPUT:
             True if empty. False if not empty
 
-        Runtime : O(1) -- isEmpty runs in constant time because all we are doing is checking whether our length
-        is 0. This is a instance variable part of the linked list class. It does not take time to find the
-        length of the linked list because we keep track of it through out the lifecycle of the linked list.
+        Runtime : O(1) -- isEmpty runs in constant time because all we are 
+        doing is checking whether our length is 0. This is a instance variable 
+        part of the linked list class. It does not take time to find the
+        length of the linked list because we keep track of it through out 
+        the lifecycle of the linked list.
         '''
 
         return self.stack.length == 0
@@ -80,36 +85,42 @@ class Stack():
         OUTPUT:
             The size of our stack
 
-        Runtime : O(1) -- Size in constant time because all we are doing is returning a variable from the linked
-        list class. This is a instance variable part of the linked list class. It does not take time to find the
-        length of the linked list because we keep track of it through out the lifecycle of the linked list.
+        Runtime : O(1) -- Size in constant time because all we are doing 
+        is returning a variable from the linked list class. This is a instance 
+        variable part of the linked list class. It does not take time to find 
+        the length of the linked list because we keep track of it through out 
+        the lifecycle of the linked list.
         '''
 
         return self.stack.length
 
     def peek(self):
         '''
-        This function will return the first data point in our stack. It does not return the node, rather just the
+        This function will return the first data point in our stack. 
+        It does not return the node, rather just the
         data.
         INPUT: None
         OUTPUT:
             Data in the top node.
 
-        Runtime : O(1) -- Peek runs in constant time because all we are doing is returning the data held in
-        the top most node aka the head.
+        Runtime : O(1) -- Peek runs in constant time because all we are doing 
+        is returning the data held in the top most node aka the head.
         '''
         return None if self.isEmpty() else self.stack.head.getData()
 
     def __len__(self):
         '''
-        This function will return the size of our stack. It allows us to use len() on this class
+        This function will return the size of our stack. It allows us 
+        to use len() on this class
         INPUT: None
         OUTPUT:
             The size of our stack
 
-        Runtime : O(1) -- Size in constant time because all we are doing is returning a variable from the linked
-        list class. This is a instance variable part of the linked list class. It does not take time to find the
-        length of the linked list because we keep track of it through out the lifecycle of the linked list.
+        Runtime : O(1) -- Size in constant time because all we are doing 
+        is returning a variable from the linked list class. This is a instance 
+        variable part of the linked list class. It does not take time to find the
+        length of the linked list because we keep track of it through out 
+        the lifecycle of the linked list.
         '''
 
         return len(self.stack)
