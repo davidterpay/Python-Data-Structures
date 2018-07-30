@@ -1,1 +1,2 @@
-# Making this file a package
+from Linked_List import LinkedList
+from Linked_List import Node

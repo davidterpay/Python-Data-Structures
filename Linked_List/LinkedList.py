@@ -1,4 +1,4 @@
-import Node
+from Linked_List import Node
 '''
 DESCRIPTION:
 This is a simple doubly Linked List class written by David Terpay. I implemented
