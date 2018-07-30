@@ -9,11 +9,11 @@ Stacks
 
 Queues
 
+Binary Trees (IN PROGRESS)
+
 ### I still want to add :
 
 Heaps
-
-Binary Trees
 
 AVL Trees
 
