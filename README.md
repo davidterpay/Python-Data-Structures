@@ -7,9 +7,9 @@ Linked Lists
 
 Stacks
 
-### I still want to add :
-
 Queues
+
+### I still want to add :
 
 Heaps
 
