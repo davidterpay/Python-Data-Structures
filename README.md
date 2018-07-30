@@ -5,9 +5,9 @@ This is an on going project of mine - to code every major data structure in pyth
 
 Linked Lists
 
-### I still want to add :
-
 Stacks
+
+### I still want to add :
 
 Queues
 
