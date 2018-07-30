@@ -24,8 +24,8 @@ class Stack():
 
         We defined one class variables:
         stack = A linked list, that is composed of variables such as size, nodes, and functionality that
-        can be seen if we check out the linked list folder. The head variable can automatically
-        initialize a stack from an existing chain of nodes. Check out initializer() in the linked list class.
+        can be seen in the linked list folder. The head variable can automatically be initialized from an 
+        existing chain of nodes. Check out initializer() in the linked list class.
         '''
 
         self.stack = LinkedList.LinkedList(head)
@@ -40,7 +40,6 @@ class Stack():
 
         Runtime : O(1) -- Push runs in constant time because all we are doing is appending a new node
         to the front of our stack or our linked list. This takes constant time.
-
         '''
 
         self.stack.addFront(data)
@@ -67,7 +66,7 @@ class Stack():
         OUTPUT:
             True if empty. False if not empty
 
-        Runtime : O(1) -- Pop runs in constant time because all we are doing is checking whether our length
+        Runtime : O(1) -- isEmpty runs in constant time because all we are doing is checking whether our length
         is 0. This is a instance variable part of the linked list class. It does not take time to find the
         length of the linked list because we keep track of it through out the lifecycle of the linked list.
         '''
