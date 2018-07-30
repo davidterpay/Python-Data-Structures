@@ -40,18 +40,18 @@ class LinkedList:
         We defined three class variables:
         head = The start of the linked list
         tail = The end of the linked list
-        size = The size of the linked list
+        length = The length of the linked list
         '''
 
         if head is not None:
             self.head = head
             self.tail = None
-            self.size = 0
+            self.length = 0
             self.initialize()
         else:
             self.head = None
             self.tail = None
-            self.size = 0
+            self.length = 0
 
     def initialize(self):
         '''
@@ -60,7 +60,7 @@ class LinkedList:
 
         INPUT: None
         OUTPUT: 
-            Linked List with head, tail and size reinitialized
+            Linked List with head, tail and length reinitialized
         
         Runtime : O(n) -- This runs in time proportional to n because we are 
         iterating through every single node until we hit None. n is proportional to
@@ -70,9 +70,9 @@ class LinkedList:
         node = self.head
         while node.getNext() is not None:
             node = node.getNext()
-            self.size += 1
+            self.length += 1
         self.tail = node
-        self.size += 1
+        self.length += 1
 
     def addFront(self, data):
         '''
@@ -100,7 +100,7 @@ class LinkedList:
             node.setNext(self.head)
             self.head.setPrev(node)
             self.head = node
-        self.size += 1
+        self.length += 1
     
     def stack(self,*args):
         '''
@@ -144,7 +144,7 @@ class LinkedList:
             node.setNext(None)
             self.tail.setNext(node)
             self.tail = node
-            self.size += 1
+            self.length += 1
 
     def insertNth(self, n, data):
         '''
@@ -160,7 +160,7 @@ class LinkedList:
 
         if n <= 0:
             self.addFront(data)
-        elif n >= self.size - 1:
+        elif n >= self.length - 1:
             self.addBack(data)
         else:
             prev = self.get(n - 1)
@@ -188,7 +188,7 @@ class LinkedList:
         best case is O(1) which means we simply insert at the front.
         '''
 
-        for index in range(self.size):
+        for index in range(self.length):
             if self.get(index).getData() > data:
                 self.insertNth(index, data)
                 return
@@ -220,7 +220,7 @@ class LinkedList:
         Case 1: No nodes exist
             Do nothing
         Case 2: There is one node
-            Delete the single node and decrement the size
+            Delete the single node and decrement the length
         Case 3: Multiple nodes
             Delete head and set new head to be head->next
 
@@ -241,7 +241,7 @@ class LinkedList:
             nextNode = self.head.getNext()
             nextNode.setPrev(None)
             self.head = nextNode
-        self.size -= 1
+        self.length -= 1
 
     def removeBack(self):
         '''
@@ -249,7 +249,7 @@ class LinkedList:
         Case 1: No nodes exist
             Do nothing
         Case 2: There is one node
-            Delete the single node and decrement the size
+            Delete the single node and decrement the length
         Case 3: Multiple nodes
             Delete tail and set new tail to be tail->prev
         
@@ -267,7 +267,7 @@ class LinkedList:
             prevNode = self.tail.getPrev()
             prevNode.setNext(None)
             self.tail = prevNode
-            self.size -= 1
+            self.length -= 1
 
     def get(self, index):
         '''
@@ -330,8 +330,8 @@ class LinkedList:
         if self.head == self.tail or self.head is None or low == upper:
             return
         else:
-            if upper > self.size - 1:
-                upper = self.size - 1
+            if upper > self.length - 1:
+                upper = self.length - 1
             if low < 0:
                 low = 0
             previousStart = self.get(low).getPrev()
@@ -344,7 +344,7 @@ class LinkedList:
             curr.setPrev(temp)
             if endNext is not None:
                 endNext.setPrev(curr)
-            if upper == self.size - 1:
+            if upper == self.length - 1:
                 self.tail = curr
             prev = curr
             curr = temp
@@ -377,31 +377,31 @@ class LinkedList:
         for a node in a linked list costs O(n) time.
         '''
 
-        self.reverse(0,self.size - 1)
+        self.reverse(0,self.length - 1)
 
     def reverseNth(self, n):
         '''
-        Reverses blocks of size n in the current List.
+        Reverses blocks of length n in the current List.
         INPUT: 
-            n: The size of the block
+            n: The length of the block
             upper: upper bound of the list
         OUTPUT: 
-            Reverses blocks of size n in the list
+            Reverses blocks of length n in the list
         
         Runtime : O(n ^ 2) -- This runs in time proportional to n ^ 2 because we are 
         utilizing our get function to collect the nodes in the range (low to high).
         We cannot get around the our runtime to a smaller one because searching 
         for a node in a linked list costs O(n) time. The runtime might vary depending
-        on the block size but as a whole it runs on worst case O(n ^ 2) due to the fact
+        on the block length but as a whole it runs on worst case O(n ^ 2) due to the fact
         that we iterate through every item in the range and the calls we make to the
         reverse function which runs in O(n).
         '''
 
-        if n >= self.size:
-            self.reverse(0,self.size - 1)
+        if n >= self.length:
+            self.reverse(0,self.length - 1)
         else:
-            for index in range(0,self.size, n):
-                if index < self.size - 1:
+            for index in range(0,self.length, n):
+                if index < self.length - 1:
                     self.reverse(index, index + n - 1)
     
     def waterfall(self):
@@ -456,7 +456,7 @@ class LinkedList:
 
         newSet = set(self.toList())
         dictionary = {key: False for key in newSet}
-        self.size = len(newSet)
+        self.length = len(newSet)
         current = self.head
         while current is not None:
             data = current.getData()
@@ -481,7 +481,7 @@ class LinkedList:
 
         Merge Sort is a recursive sorting algorithm that behaves as follows:
 
-        Base Case: A list of size 1 is sorted. Return.
+        Base Case: A list of length 1 is sorted. Return.
         Recursive Case:
         Split the current list into two smaller, more manageable parts
         Sort the two halves (this should be a recursive call)
@@ -505,16 +505,16 @@ class LinkedList:
             Sorted linked list using mergesort
         
         Runtime : O(nlg(n)) -- This runs in time proportional to nlg(n) it takes lg(n) time 
-        to split the entire linked list into two halves until the size is 1, and it takes
+        to split the entire linked list into two halves until the length is 1, and it takes
         n time to merge together all of the lists back together. Although mergesort does
         allocate some new list pointers, it does not allocate new nodes. This is due to the 
         way I implemented split and merge (which are seen below).
         '''
 
-        if other.size == 1:
+        if other.length == 1:
             return
         else:
-            mid = other.size // 2
+            mid = other.length // 2
             right = other.split(mid)
             left = other
             self.mergesort(left)
@@ -540,7 +540,7 @@ class LinkedList:
         runtime could be better if the splitPoint is early on.
         '''
 
-        if splitPoint >= self.size:
+        if splitPoint >= self.length:
             return
         else:
             node = self.get(splitPoint - 1)
@@ -548,7 +548,7 @@ class LinkedList:
             next.setPrev(None)
             node.setNext(None)
             self.tail = node
-            self.size = splitPoint
+            self.length = splitPoint
             newLst = LinkedList(next)
             return newLst
 
@@ -588,7 +588,7 @@ class LinkedList:
                     firstLst.getPrev().setNext(secondLst)
                     firstLst.setPrev(secondLst)
                     secondLst = temp
-                self.size += 1
+                self.length += 1
             else:
                 if firstLst == self.tail:
                     temp = secondLst.getNext()
@@ -597,7 +597,7 @@ class LinkedList:
                     secondLst.setNext(None)
                     self.tail = secondLst
                     secondLst = temp
-                    self.size += 1
+                    self.length += 1
                 else:
                     firstLst = firstLst.getNext()
         del other
@@ -608,8 +608,8 @@ class LinkedList:
         If the data in the current node is larger, then it swaps them. It does this process
         until it hits the end of our list at which point we know that the largest 
         data point has to be at the end of our linked list. Therefore we can now simply
-        search the size of the linked list - 1 until we get to a size of 1 at which point 
-        we know we have a sorted list because an element of size one is sorted. This algorithm
+        search the length of the linked list - 1 until we get to a length of 1 at which point 
+        we know we have a sorted list because an element of length one is sorted. This algorithm
         runs in O(n^2) and takes up O(1) space since we do not use addition space.
         INPUT: None
         OUTPUT: 
@@ -622,21 +622,21 @@ class LinkedList:
         becomes O(n ^ 2).
         '''
 
-        if self.head is None or self.size == 1:
+        if self.head is None or self.length == 1:
             return
-        elif self.head.getData() > self.tail.getData() and self.size == 2:
+        elif self.head.getData() > self.tail.getData() and self.length == 2:
                 self.swap(self.head, self.tail)
         else:
-            bubblesize = self.size
-            for _ in range(self.size - 1):
+            bubblelength = self.length
+            for _ in range(self.length - 1):
                 current = next = self.get(0)
-                for __ in range(bubblesize - 1):
+                for __ in range(bubblelength - 1):
                     next = current.getNext()
                     if current.getData() > next.getData():
                         self.swap(current,next)
                     else:
                         current = next
-                bubblesize -= 1
+                bubblelength -= 1
 
     def swap(self,prev,next):
         '''
@@ -711,7 +711,7 @@ class LinkedList:
         attribute to of this class
         '''
 
-        return self.size
+        return self.length
     
     def __str__(self):
         '''
