@@ -1,8 +1,8 @@
 import sys
 sys.path.append('../')
-from Stack import Stack # Will be used in traversals
-from Queue import Queue # Will be used in traversals
-from Binary_Tree import TreeNode # Importing TreeNode class
+from Stacks import Stack # Will be used in traversals
+from Queues import Queue # Will be used in traversals
+import TreeNode # Importing TreeNode class
 '''
 Written by David Terpay
 
@@ -11,6 +11,10 @@ In this class I will implement every type of traversal, search, removal, and eve
 some AVL tree properties. In addition, this class will display information describing the
 type of tree that we have: full, perfect, complete, balanced. We will keep track of only 
 the root of the tree, nothing else.
+
+I imported two classes other than the treenode class stack and queue. These are two classes
+that I also wrote and can be found in the Stack and Queue folder on my github. These two classes
+will particularly be helpful when we are doing traversals and searches.
 '''
 #propertities
 #   height
@@ -49,13 +53,66 @@ class BinarySearchTree():
         self.root = root
     
     def insert(self, data):
-        pass
+        '''
+        '''
+        if self.root is None:
+            self.root = TreeNode.TreeNode(data)
+        else:
+            self.__insertHelper(data, self.root)
+
+    def __insertHelper(self, data, node):
+        '''
+        '''
+        if node.getData() == data: # We do not want duplicates
+            return
+        elif node.getData() < data:
+            if node.getRight() is None:
+                newNode = TreeNode.TreeNode(data)
+                newNode.setParent(node)
+                node.setRight(newNode)
+            else:
+                self.__insertHelper(data, node.getRight())
+        else:
+            if node.getLeft() is None:
+                newNode = TreeNode.TreeNode(data)
+                newNode.setParent(node)
+                node.setLeft(newNode)
+            else:
+                self.__insertHelper(data, node.getLeft())
 
     def remove(self, data):
+        '''
+        No Child:
+        One child:
+        Two child:
+        '''
         pass
 
     def find(self, data):
-        pass
+        '''
+        '''
+        if self.root.getData() == data:
+            return self.root
+        else:
+            return self.findHelper(data, self.root)
+    
+    def findHelper(self, data, node):
+        '''
+        '''
+        if node == None or node.getData() == data:
+            return node
+        elif node.getData() < data:
+            self.findHelper(data, node.getLeft())
+        else:
+            self.findHelper(data, node.getRight())
+
+    def findIOP(self, node):
+        '''
+        '''
+        if node.getRight() is not None:
+            self.findIOP(node)
+        else:
+            return node
 
     def height(self, subRoot):
         pass
@@ -107,3 +164,4 @@ class BinarySearchTree():
     
     def __str__(self):
         pass
+bst = BinarySearchTree()
