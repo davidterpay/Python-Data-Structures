@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../')
-from Stacks import Stack # Will be used in traversals
-from Queues import Queue # Will be used in traversals
+from Stacks import Stack # Will be used in traversals; visit Stacks folder for docs
+from Queues import Queue # Will be used in traversals; visit Queues folder for docs
 import TreeNode # Importing TreeNode class
 '''
 Written by David Terpay
@@ -469,11 +469,60 @@ class BinarySearchTree():
                 queue.enque(node.getRight())
         return lst
 
-    def bfs(self):  # Work on this
-        pass
+    def bfs(self, data):
+        '''
+        This function will help us find an node given our elements are not entirely sorted or our 
+        method of sorting the data is not exactly clear (we might have a heap). This function will
+        do a breadth first search which is similar to a level order traversal in that we will search
+        level by level.
+        INPUT:
+            data = Data to be searched for
+        OUTPUT:
+            Node containing the data given the data exists in the tree, otherwise None
+        
+        Runtime -- O(n) -- The runtime is proptional to the amount of data in our BST because we might have to
+        search every node before finding the correct node. Average runtime is O(n).
+        '''
 
-    def dfs(self):  # Work on this
-        pass
+        queue = Queue.Queue()
+        queue.enque(self.root)
+        while not queue.isEmpty():
+            node = queue.deque()
+            if node.getData() == data:
+                return node
+            if node.getLeft():
+                queue.enque(node.getLeft())
+            if node.getRight():
+                queue.enque(node.getRight())
+        return None
+
+    def dfs(self, data):
+        '''
+        This function will help us find an node given our elements are not entirely sorted or our 
+        method of sorting the data is not exactly clear (we might have a heap). This function will
+        do a depth first search which is similar to a preorder traversal in that we will search
+        Curr L R. This will allow us to search as deep into our tree as quickly as possible. We use the
+        stack class in this function. For documentation, go to the stacks folder in the repository.
+        INPUT:
+            data = Data to be searched for
+        OUTPUT:
+            Node containing the data given the data exists in the tree, otherwise None
+        
+        Runtime -- O(n) -- The runtime is proptional to the amount of data in our BST because we might have to
+        search every node before finding the correct node. Average runtime is O(n).
+        '''
+
+        stack = Stack.Stack()
+        stack.push(self.root)
+        while not stack.isEmpty():
+            node = stack.pop()
+            if data == node.getData():
+                return node
+            if node.getLeft():
+                stack.push(node.getLeft())
+            if node.getRight():
+                stack.push(node.getRight())
+        return None
 
     def perfect(self):  # Work on this
         pass
@@ -509,6 +558,5 @@ class BinarySearchTree():
         pass
 
 bst = BinarySearchTree()
-bst.insertList(100,50,200,300)
-for node in bst.levelOrderTraversal():
-    print(node)
+bst.insertList('hi', 'my', 'name' ,'is' ,'david' ,'and' ,'this', 'my', 'bst')
+print(bst.bfs('david'))
