@@ -524,11 +524,43 @@ class BinarySearchTree():
                 stack.push(node.getRight())
         return None
 
-    def perfect(self):  # Work on this
+    def perfect(self, subRoot):
+        '''
+        A perfect tree is a tree that has two nodes and has every node on the same level
+        for the last level. In other words, the last level has a full level.
+        INPUT: None
+        OUTPUT:
+            True if perfect; false if not perfect
+        
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to visit every node
+        in our BST
+        '''
+        
         pass
+        # if not subRoot:
+        #     return True
+        # elif subRoot.
 
-    def full(self):  # Work on this
-        pass
+    def full(self, subRoot):
+        '''
+        This function will tell us whether our tree is full. A tree is full if every node
+        has exactly 2 or 0 children.
+        INPUT: None
+        OUTPUT:
+            True if full; false if not full
+        
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to visit every node
+        in our BST
+        '''
+
+        if subRoot is None:
+            return True
+        elif subRoot.getLeft() and not subRoot.getRight():
+            return False
+        elif not subRoot.getLeft() and subRoot.getRight():
+            return False
+        else:
+            return self.full(subRoot.getRight()) and self.full(subRoot.getLeft())
 
     def complete(self):  # Work on this
         pass
@@ -558,5 +590,5 @@ class BinarySearchTree():
         pass
 
 bst = BinarySearchTree()
-bst.insertList('hi', 'my', 'name' ,'is' ,'david' ,'and' ,'this', 'my', 'bst')
-print(bst.bfs('david'))
+bst.insertList(10,20,0,30)
+print(bst.full(bst.root))
