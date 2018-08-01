@@ -98,5 +98,16 @@ class TreeNode():
         This function will give us a string representation of our treenode. This will allow us to
         print each of the nodes if we want to print a tree.
         '''
-
-        return str(self.__data)
+        leftData = None
+        rightData = None
+        parentData = None
+        if self.__parent:
+            parentData = self.__parent.getData()
+        if self.__left:
+            leftData = self.__left.getData()
+        if self.__right:
+            rightData = self.__right.getData()
+        string = '-----------------\n' + \
+            f'   Data: {self.__data}\n  Parent: {parentData}\n\n  LC \tRC \n  {leftData}\t{rightData}\n'
+        string += '-----------------\n'
+        return string

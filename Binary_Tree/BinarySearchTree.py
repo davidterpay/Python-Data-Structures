@@ -28,6 +28,7 @@ class BinarySearchTree():
         OUTPUT:
             A new instance of a binary search tree.
         '''
+
         self.root = root
     
     def insert(self, data):
@@ -84,6 +85,22 @@ class BinarySearchTree():
             else:
                 self.__insertHelper(data, node.getLeft())
 
+    def insertList(self,*args):
+        '''
+        Wrapper function that allows you to insert multiple data points at a time.
+        INPUT:
+            args = list of data points
+        OUTPUT:
+            BST with new nodes
+
+        RUNTIME -- O(n) -- This function runs in O(n) because it at most takes O(n) time 
+        to insert a node into a list but ideally is O(h) and there are n data points in the list.
+        So, O(n) + O(lg(n)) = O(n)
+        '''
+
+        for data in args:
+            self.insert(data)
+
     def find(self, data):
         '''
         This function is going to find a node based on inputed data. It will return the entire
@@ -97,6 +114,7 @@ class BinarySearchTree():
         in terms of n this is a lg(n) time where the tree is either complete or perfect. But the runtime can
         be as bad as O(n) if we simply have a linked list.
         '''
+
         if self.root.getData() == data:
             return self.root
         else:
@@ -224,23 +242,232 @@ class BinarySearchTree():
             node = node.getRight()
         return node
 
-    def height(self, subRoot):  # Work on this
-        pass
+    def height(self):
+        '''
+        This function will return the height of our BST. It is a recursive function that runs through
+        all of the paths in our BST. This makes our runtime rather slow at O(n). It uses the helper
+        function _helper which inputs a root that we will recurse on.
+        INPUT: None
+        OUTPUT:
+            Height of BST
+        
+        Runtime -- O(n) -- Height runs in time proportional to n because we have to visit all paths to 
+        determine which one is the longest.
+        '''
 
-    def mirror(self): # Work on this
-        pass
+        return self.__height(self.root)
 
-    def inOrderTraverasl(self):  # Work on this
-        pass
+    def __height(self, subRoot):
+        '''
+        This function will return the height of our BST from any given nodee. It is a recursive function 
+        that runs through all of the paths in our BST. This makes our runtime rather slow at O(n). It will 
+        return -1 if the node is none and otherwise it compares and takes the max height of the left and 
+        right subtrees.
 
-    def postOrderTraverasl(self):  # Work on this
-        pass
+        INPUT:
+            subRoot: Node that we will determine the longest path
+        OUTPUT:
+            Height of BST from given node
+        
+        Runtime -- O(n) -- Height runs in time proportional to n because we have to visit all paths to 
+        determine which one is the longest.
+        '''
 
-    def preOrderTraversal(self):  # Work on this
-        pass
+        if subRoot == None:
+            return -1
+        return 1 + max(self.__height(subRoot.getLeft()), self.__height(subRoot.getRight()))
 
-    def levelOrderTraversal(self):  # Work on this
-        pass
+    def mirror(self):
+        '''
+        This is a wrapper function to __mirror. This function will do a complete mirror over the 
+        center of our BST. All left subtrees will be swapped with right subtrees and right 
+        subtrees will be swapped with left subtrees.
+        INPUT: None
+        OUTPUT:
+            Mirrored BST
+        
+        Runtime -- O(n) -- Since we have to visit every node in our tree, the runtime is O(n) because
+        we have to visit every single node.
+        '''
+
+        self.__mirror(self.root)
+    
+    def __mirror(self, root):
+        '''
+        This function will do a complete mirror over the center of our BST. All left subtrees
+        will be swapped with right subtrees and right subtrees will be swapped with left subtrees.
+        INPUT: 
+            root = Node that we will be swapping children off.
+        OUTPUT:
+            Mirrored BST
+        
+        Runtime -- O(n) -- Since we have to visit every node in our tree, the runtime is O(n) because
+        we have to visit every single node.
+        '''
+        
+        if root is None:
+            return
+        right = root.getRight()
+        left = root.getLeft()
+        root.setLeft(right)
+        root.setRight(left)
+        self.__mirror(root.getLeft())
+        self.__mirror(root.getRight())
+
+    def inOrderTraverasl(self):
+        '''
+        This function will allow us to do an Inorder traversal. In other words we follow the 
+        traversal of visiting left node, checking current, and visiting right node - L curr R. 
+        We dive into the tree using this algorithm. This algorithm will print out our data in order. We
+        use the helper function IOT to achieve all of this. We will return a list of our nodes.
+
+        You can see more here: https://en.wikipedia.org/wiki/Tree_traversal
+
+        INPUT: None
+        OUTPUT:
+            Inorder traversal of our BST.
+        
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        '''
+        lst = []
+        self.__IOT(self.root, lst)
+        return lst
+    
+    def __IOT(self, subRoot, lst):
+        '''
+        This function will allow us to do an Inorder traversal. In other words we follow the 
+        traversal of visiting left node, checking current, and visiting right node - L curr R. 
+        We dive into the tree using this algorithm. This algorithm will print out our data in order.
+
+        You can see more here: https://en.wikipedia.org/wiki/Tree_traversal
+        
+        INPUT: 
+            subRoot = Root that we will be diving into
+            lst = List that keeps track of our inorder traversal.
+        OUTPUT:
+            Inorder traversal of our BST.
+        
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        '''
+
+        if subRoot:
+            self.__IOT(subRoot.getLeft(),lst)
+            lst.append(subRoot)
+            self.__IOT(subRoot.getRight(),lst)
+    
+    def postOrderTraverasl(self):
+        '''
+        This function will allow us to do an postorder traversal. In other words we follow the 
+        traversal of visiting left node, visiting right node, and checking current - L R curr. 
+        We dive into the tree using this algorithm. We use the helper function POT to achieve 
+        all of this. We will return a list of our nodes.
+
+        You can see more here: https://en.wikipedia.org/wiki/Tree_traversal
+
+        INPUT: None
+        OUTPUT:
+            Postorder traversal of our BST.
+        
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        '''
+
+        lst = []
+        self.__POT(self.root,lst)
+        return lst
+
+    def __POT(self, subRoot, lst):
+        '''
+        This function will allow us to do an postorder traversal. In other words we follow the 
+        traversal of visiting left node, visiting right node, and checking current - L R curr. 
+        We dive into the tree using this algorithm. We use the helper function POT to achieve 
+        all of this. We will return a list of our nodes.
+
+        You can see more here: https://en.wikipedia.org/wiki/Tree_traversal
+
+        INPUT: 
+            subRoot = Root that we will be diving into
+            lst = List that keeps track of our postorder traversal.
+        OUTPUT:
+            Postorder traversal of our BST.
+        
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        '''
+
+        if subRoot:
+            self.__POT(subRoot.getLeft(),lst)
+            self.__POT(subRoot.getRight(), lst)
+            lst.append(subRoot)
+
+    def preOrderTraversal(self):
+        '''
+        This function will allow us to do an preorder traversal. In other words we follow the 
+        traversal of checking current, visiting left node, and visiting right node - curr L R. 
+        We dive into the tree using this algorithm. We use the helper function __PRT to achieve 
+        all of this. We will return a list of our nodes.
+
+        You can see more here: https://en.wikipedia.org/wiki/Tree_traversal
+
+        INPUT: None
+        OUTPUT:
+            Preorder traversal of our BST.
+        
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        '''
+
+        lst = []
+        self.__PRT(self.root, lst)
+        return lst
+
+    def __PRT(self, subRoot, lst):
+        '''
+        This function will allow us to do an preorder traversal. In other words we follow the 
+        traversal of checking current, visiting left node, and visiting right node - curr L R. 
+        We dive into the tree using this algorithm. We use the helper function __PRT to achieve 
+        all of this. We will return a list of our nodes.
+
+        You can see more here: https://en.wikipedia.org/wiki/Tree_traversal
+
+        INPUT: 
+            subRoot = Root that we will be diving into
+            lst = List that keeps track of our preorder traversal.
+        OUTPUT:
+            Preorder traversal of our BST.
+        
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        '''
+
+        if subRoot:
+            lst.append(subRoot)
+            self.__PRT(subRoot.getLeft(), lst)
+            self.__PRT(subRoot.getRight(), lst)
+
+    def levelOrderTraversal(self):
+        '''
+        This function will allow us to do an level order traversal (ie, from left to right, level by level). 
+        In other words we follow the traversal of checking the nodes on each level of the tree. 
+        Here we finally use the queue class.
+        
+
+        You can see more here: https://en.wikipedia.org/wiki/Tree_traversal
+
+        INPUT: None
+        OUTPUT:
+            Level order traversal of our BST.
+        
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        '''
+
+        queue = Queue.Queue()
+        lst = []
+        queue.enque(self.root)
+        while not queue.isEmpty():
+            node = queue.deque()
+            lst.append(node)
+            if node.getLeft():
+                queue.enque(node.getLeft())
+            if node.getRight():
+                queue.enque(node.getRight())
+        return lst
 
     def bfs(self):  # Work on this
         pass
@@ -282,3 +509,6 @@ class BinarySearchTree():
         pass
 
 bst = BinarySearchTree()
+bst.insertList(100,50,200,300)
+for node in bst.levelOrderTraversal():
+    print(node)
