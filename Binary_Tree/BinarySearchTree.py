@@ -3,6 +3,7 @@ sys.path.append('../')
 from Stacks import Stack # Will be used in traversals; visit Stacks folder for docs
 from Queues import Queue # Will be used in traversals; visit Queues folder for docs
 import TreeNode # Importing TreeNode class
+import math
 '''
 Written by David Terpay
 
@@ -556,11 +557,26 @@ class BinarySearchTree():
 
         return self.numNodes(subRoot) == pow(2, self.__height(subRoot) + 1) - 1 if subRoot else True
 
-    def full(self, subRoot):
+    def full(self):
         '''
         This function will tell us whether our tree is full. A tree is full if every node
         has exactly 2 or 0 children.
         INPUT: None
+        OUTPUT:
+            True if full; false if not full
+        
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to visit every node
+        in our BST
+        '''
+
+        return self.__full(self.root)
+    
+    def __full(self, subRoot):
+        '''
+        This function will tell us whether our tree is full. A tree is full if every node
+        has exactly 2 or 0 children.
+        INPUT: 
+            subRoot: Treenode that we recurse on.
         OUTPUT:
             True if full; false if not full
         
@@ -575,7 +591,7 @@ class BinarySearchTree():
         elif not subRoot.getLeft() and subRoot.getRight():
             return False
         else:
-            return self.full(subRoot.getRight()) and self.full(subRoot.getLeft())
+            return self.__full(subRoot.getRight()) and self.__full(subRoot.getLeft())
 
     def complete(self):
         '''
@@ -653,9 +669,40 @@ class BinarySearchTree():
 
         return self.__height(subRoot.getLeft()) - self.__height(subRoot.getRight())
 
-    def properties(self):  # Work on this
-        pass
-    
+    def properties(self):
+        '''
+        This function will return a dictionary of every single property of our tree.
+        INPUT: None
+        OUTPUT:
+            A dictionary of every single tree property.
+        '''
+
+        props = {'Nodes' : len(self)}
+        props['Height'] = self.height()
+        props['Perfect'] = self.perfect()
+        props['Complete'] = self.complete()
+        props['Full'] = self.full()
+        props['Balanced'] = self.balanced()
+        props['Balance Factor'] = self.balanceFactor(self.root)
+        props['Inorder Traversal'] = [node.getData() for node in self.inOrderTraverasl()]
+        props['Preorder Traversal'] = [node.getData() for node in self.preOrderTraversal()]
+        props['Postorder Traversal'] = [node.getData() for node in self.postOrderTraverasl()]
+        props['Level order Traversal'] = [node.getData() for node in self.levelOrderTraversal()]
+        return props
+
+    def printProperties(self):
+        '''
+        This is a helper function to simply print all of the properties of our BST.
+        INPUT: None
+        OUTPUT:
+            All properties printed.
+        '''
+
+        print('{')
+        for key, value in self.properties().items():
+            print(str(key) + ' : ' + str(value))
+        print('}')
+
     def sumDistance(self):  # Work on this
         pass
     
@@ -693,10 +740,7 @@ class BinarySearchTree():
     
     def __del__(self):  # Work on this
         pass
-    
-    def __str__(self):  # Work on this
-        pass
+
 
 bst = BinarySearchTree()
-bst.insertList(10,20,30,5)
-print(bst.balanced())
+bst.insertList(15,30,10)
