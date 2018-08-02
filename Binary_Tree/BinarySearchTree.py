@@ -524,10 +524,12 @@ class BinarySearchTree():
                 stack.push(node.getRight())
         return None
 
-    def perfect(self, subRoot):
+    def perfect(self):
         '''
         A perfect tree is a tree that has two nodes and has every node on the same level
-        for the last level. In other words, the last level has a full level.
+        for the last level. In other words, the last level has a full level. A perfect tree
+        has only one struture for any given height. We use __perfect in this function as a helper 
+        function.
         INPUT: None
         OUTPUT:
             True if perfect; false if not perfect
@@ -536,10 +538,23 @@ class BinarySearchTree():
         in our BST
         '''
         
-        pass
-        # if not subRoot:
-        #     return True
-        # elif subRoot.
+        return self.__perfect(self.root)
+
+    def __perfect(self,subRoot):
+        '''
+        A perfect tree is a tree that has two nodes and has every node on the same level
+        for the last level. In other words, the last level has a full level. A perfect tree
+        has only one struture for any given height.
+        INPUT: 
+            subRoot: Treenode that we recurse on
+        OUTPUT:
+            True if perfect; false if not perfect
+        
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to visit every node
+        in our BST
+        '''
+
+        return self.numNodes(subRoot) == pow(2, self.__height(subRoot) + 1) - 1 if subRoot else True
 
     def full(self, subRoot):
         '''
@@ -562,11 +577,81 @@ class BinarySearchTree():
         else:
             return self.full(subRoot.getRight()) and self.full(subRoot.getLeft())
 
-    def complete(self):  # Work on this
-        pass
+    def complete(self):
+        '''
+        A BST is complete if the BST is a perfect tree up until the last level where all of 
+        the nodes are pushed to the left. This means that we have two cases. Either the 
+        left subtree is a perfect tree and right subtree is complete or the left subtree is 
+        complete and right subtree is perfect. We use the helper function __complete to check if 
+        our tree is complete or not.
+        INPUT: None
+        OUTPUT:
+            True if complete. False if not.
+        
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to look at every single node 
+        and its children in this tree.
+        '''
 
-    def balanced(self):  # Work on this
-        pass
+        return self.__complete(self.root)
+    
+    def __complete(self, subRoot):
+        '''
+        A BST is complete if the BST is a perfect tree up until the last level where all of
+        the nodes are pushed to the left. This means that we have two cases. Either the
+        left subtree is a perfect tree and right subtree is complete or the left subtree is
+        complete and right subtree is perfect.
+        INPUT: 
+            subRoot: Treenode that we recurse on.
+        OUTPUT:
+            True if complete. False if not.
+
+        Runtime - - O(n) - - This function runs in time proportional to n because we have to look at every single node
+        and its children in this tree.
+        '''
+
+        if subRoot:
+            l = subRoot.getLeft()
+            r = subRoot.getRight()
+            if not r and not l:
+                return True
+            if r and not l:
+                return False
+            else:
+                return self.__perfect(l) and self.__complete(r) or self.__complete(l) and self.__perfect(r)
+        else:
+            return True
+
+    def balanced(self):
+        '''
+        This function will return true if our tree is balanced. In other words, if the absolute difference 
+        in height between the left and right subtrees is less than or equal to 1. We use balanceFactor to 
+        check the heightt of the left and right subtrees. We will use this function when we inherit this
+        class to make AVL trees.
+        INPUT: None
+        OUTPUT:
+            True if balanced. False if not.
+
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to find the height
+        of the right and left subtrees. That requires O(n) time.
+        '''
+
+        return abs(self.balanceFactor(self.root)) <= 1
+
+    def balanceFactor(self,subRoot):
+        '''
+        This function will return true the absolute difference in height between the left and right subtrees 
+        is less than or equal to 1. We use balanceFactor to check the heightt of the left and right subtrees. 
+        We will use this function when we inherit this class to make AVL trees.
+        INPUT: 
+            subRoot = The subRoot whose height we will be checking
+        OUTPUT:
+            Returns the balance factor of that node
+
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to find the height
+        of the right and left subtrees. That requires O(n) time.
+        '''
+
+        return self.__height(subRoot.getLeft()) - self.__height(subRoot.getRight())
 
     def properties(self):  # Work on this
         pass
@@ -580,8 +665,31 @@ class BinarySearchTree():
     def printPaths(self):  # Work on this
         pass
     
-    def __len__(self):  # Work on this
-        pass
+    def numNodes(self,subRoot):
+        '''
+        This function will return the number of nodes we have in our BST.
+        INPUT: None
+        OUTPUT:
+            Number of treenodes in our BST.
+
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to visit every single node.
+        '''
+
+        if not subRoot:
+            return 0
+        return 1 + self.numNodes(subRoot.getRight()) + self.numNodes(subRoot.getLeft())
+
+    def __len__(self):
+        '''
+        This function simply returns the length of our BST, allows for functionality using
+        len(). It uses the numNodes helper function to determine the number of treenodes.
+        For documentation look at that function.
+        INPUT: None
+        OUTPUT:
+            Number of treenodes in our BST.
+        '''
+
+        return self.numNodes(self.root)
     
     def __del__(self):  # Work on this
         pass
@@ -590,5 +698,5 @@ class BinarySearchTree():
         pass
 
 bst = BinarySearchTree()
-bst.insertList(10,20,0,30)
-print(bst.full(bst.root))
+bst.insertList(10,20,30,5)
+print(bst.balanced())
