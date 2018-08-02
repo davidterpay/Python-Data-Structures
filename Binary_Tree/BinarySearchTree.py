@@ -706,12 +706,26 @@ class BinarySearchTree():
     def sumDistance(self):  # Work on this
         pass
     
-    def longestPath(self):  # Work on this
-        pass
+    def longestPath(self):
+        lst = []
+        lst.append(self.root)
+        self.__longestPath(self.root,lst)
+        return [node.getData() for node in lst if node]
+
+    def __longestPath(self, subRoot, lst):  # Work on this
+        if not subRoot:
+            return -1
+        if self.__longestPath(subRoot.getRight(), lst) > self.__longestPath(subRoot.getLeft(),lst):
+            lst.append(subRoot.getRight())
+            return 1 + self.__longestPath(subRoot.getRight(), lst)
+        else:
+            lst.append(subRoot.getLeft())
+            return 1 + self.__longestPath(subRoot.getLeft(), lst)
     
     def printPaths(self):  # Work on this
         pass
-    
+
+
     def numNodes(self,subRoot):
         '''
         This function will return the number of nodes we have in our BST.
@@ -726,6 +740,24 @@ class BinarySearchTree():
             return 0
         return 1 + self.numNodes(subRoot.getRight()) + self.numNodes(subRoot.getLeft())
 
+    def clear(self, subRoot):
+        '''
+        This is a helper function to del(). We will recursively dive into the bottom of the
+        tree and delete as we come back up.
+        INPUT:
+            subRoot: Root we are recursing on
+        OUTPUT:
+            Deleted tree
+        
+        '''
+
+        if subRoot:
+            l = subRoot.getLeft()
+            r = subRoot.getRight()
+            self.clear(l)
+            self.clear(r)
+            del subRoot
+            
     def __len__(self):
         '''
         This function simply returns the length of our BST, allows for functionality using
@@ -738,9 +770,14 @@ class BinarySearchTree():
 
         return self.numNodes(self.root)
     
-    def __del__(self):  # Work on this
-        pass
+    def __del__(self):
+        '''
+        Deletes all memory associated with the creation of a BST.
+        '''
+
+        self.clear(self.root)
 
 
 bst = BinarySearchTree()
-bst.insertList(15,30,10)
+bst.insertList(15,30,0,-15)
+print(bst.longestPath())
