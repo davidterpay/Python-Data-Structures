@@ -35,18 +35,20 @@ class BinarySearchTree():
     
     def insert(self, data):
         '''
-        This function will insert into our tree. If the root is none will simply make the new
-        node the root. Otherwise we will call the helper function to recursively go thorugh 
-        the tree until we hit a leaf where we will place our node. We do not place duplicates into
+        This function will insert into our tree. If the root is none will simply 
+        make the new node the root. Otherwise we will call the helper function to 
+        recursively go thorugh the tree until we hit a leaf where we will place 
+        our node. We do not place duplicates into
         our tree.
         INPUT:
             data = Data to be inserted into the tree
         OUTPUT:
             Tree with an additional node.
 
-        Runtime -- O(h) -- This algorithm runs in O(h) because we have to get to a leaf node. Ideally,
-        in terms of n this is a lg(n) time where the tree is either complete or perfect. But the runtime can
-        be as bad as O(n) if we simply have a linked list.
+        Runtime -- O(h) -- This algorithm runs in O(h) because we have to get 
+        to a leaf node. Ideally, in terms of n this is a lg(n) time where the tree 
+        is either complete or perfect. But the runtime can be as bad as O(n) 
+        if we simply have a linked list.
         '''
 
         if self.root is None:
@@ -96,8 +98,8 @@ class BinarySearchTree():
             BST with new nodes
 
         RUNTIME -- O(n) -- This function runs in O(n) because it at most takes O(n) time 
-        to insert a node into a list but ideally is O(h) and there are n data points in the list.
-        So, O(n) + O(lg(n)) = O(n)
+        to insert a node into a list but ideally is O(h) and there are n data points in the 
+        list. So, O(n) + O(lg(n)) = O(n)
         '''
 
         for data in args:
@@ -105,15 +107,17 @@ class BinarySearchTree():
 
     def find(self, data):
         '''
-        This function is going to find a node based on inputed data. It will return the entire
-        treenodee unless the data is not in the tree in which it will return None.
+        This function is going to find a node based on inputed data. 
+        It will return the entire treenodee unless the data is not in 
+        the tree in which it will return None.
         INPUT:
             data = Data that we are trying to find
         OUTPUT:
             The treenode with the data or None
 
-        Runtime -- O(h) -- This algorithm runs in O(h) because we have to get to a leaf node. Ideally,
-        in terms of n this is a lg(n) time where the tree is either complete or perfect. But the runtime can
+        Runtime -- O(h) -- This algorithm runs in O(h) because we have 
+        to get to a leaf node. Ideally, in terms of n this is a lg(n) time 
+        where the tree is either complete or perfect. But the runtime can
         be as bad as O(n) if we simply have a linked list.
         '''
 
@@ -248,15 +252,16 @@ class BinarySearchTree():
 
     def height(self):
         '''
-        This function will return the height of our BST. It is a recursive function that runs through
-        all of the paths in our BST. This makes our runtime rather slow at O(n). It uses the helper
-        function _helper which inputs a root that we will recurse on.
+        This function will return the height of our BST. It is a recursive 
+        function that runs through all of the paths in our BST. This makes 
+        our runtime rather slow at O(n). It uses the helper function _helper 
+        which inputs a root that we will recurse on.
         INPUT: None
         OUTPUT:
             Height of BST
         
-        Runtime -- O(n) -- Height runs in time proportional to n because we have to visit all paths to 
-        determine which one is the longest.
+        Runtime -- O(n) -- Height runs in time proportional to n because we have 
+        to visit all paths to determine which one is the longest.
         '''
 
         return self.__height(self.root)
@@ -283,8 +288,8 @@ class BinarySearchTree():
 
     def mirror(self):
         '''
-        This is a wrapper function to __mirror. This function will do a complete mirror over the 
-        center of our BST. All left subtrees will be swapped with right subtrees and right 
+        This is a wrapper function to __mirror. This function will do a complete mirror over 
+        the center of our BST. All left subtrees will be swapped with right subtrees and right 
         subtrees will be swapped with left subtrees.
         INPUT: None
         OUTPUT:
@@ -320,10 +325,11 @@ class BinarySearchTree():
 
     def inOrderTraverasl(self):
         '''
-        This function will allow us to do an Inorder traversal. In other words we follow the 
-        traversal of visiting left node, checking current, and visiting right node - L curr R. 
-        We dive into the tree using this algorithm. This algorithm will print out our data in order. We
-        use the helper function IOT to achieve all of this. We will return a list of our nodes.
+        This function will allow us to do an Inorder traversal. In other words we 
+        follow the traversal of visiting left node, checking current, and visiting 
+        right node - L curr R. We dive into the tree using this algorithm. This 
+        algorithm will print out our data in order. We use the helper function 
+        IOT to achieve all of this. We will return a list of our nodes.
 
         You can see more here: https://en.wikipedia.org/wiki/Tree_traversal
 
@@ -331,7 +337,8 @@ class BinarySearchTree():
         OUTPUT:
             Inorder traversal of our BST.
         
-        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit 
+        very single node.
         '''
         lst = []
         self.__IOT(self.root, lst)
@@ -372,7 +379,8 @@ class BinarySearchTree():
         OUTPUT:
             Postorder traversal of our BST.
         
-        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit 
+        every single node.
         '''
 
         lst = []
@@ -415,7 +423,8 @@ class BinarySearchTree():
         OUTPUT:
             Preorder traversal of our BST.
         
-        Runtime -- O(n) -- This function runs in O(n) because we have to visit every single node.
+        Runtime -- O(n) -- This function runs in O(n) because we have to visit every 
+        single node.
         '''
 
         lst = []
@@ -478,8 +487,8 @@ class BinarySearchTree():
 
     def bfs(self, data):
         '''
-        This function will help us find an node given our elements are not entirely sorted or our 
-        method of sorting the data is not exactly clear (we might have a heap). 
+        This function will help us find an node given our elements are not entirely sorted 
+        or our method of sorting the data is not exactly clear (we might have a heap). 
         This function will do a breadth first search which is similar to a level order 
         traversal in that we will search level by level.
         INPUT:
@@ -511,7 +520,8 @@ class BinarySearchTree():
         a heap). This function will do a depth first search which is similar to a 
         preorder traversal in that we will search Curr L R. This will allow us to 
         search as deep into our tree as quickly as possible. We use the
-        stack class in this function. For documentation, go to the stacks folder in the repository.
+        stack class in this function. For documentation, go to the stacks folder 
+        in the repository.
         INPUT:
             data = Data to be searched for
         OUTPUT:
@@ -538,8 +548,8 @@ class BinarySearchTree():
         '''
         A perfect tree is a tree that has two nodes and has every node on the same level
         for the last level. In other words, the last level has a full level. A perfect tree
-        has only one struture for any given height. We use __perfect in this function as a helper 
-        function.
+        has only one struture for any given height. We use __perfect in this function as a 
+        helper function.
         INPUT: None
         OUTPUT:
             True if perfect; false if not perfect
@@ -604,17 +614,17 @@ class BinarySearchTree():
 
     def complete(self):
         '''
-        A BST is complete if the BST is a perfect tree up until the last level where all of 
-        the nodes are pushed to the left. This means that we have two cases. Either the 
-        left subtree is a perfect tree and right subtree is complete or the left subtree is 
-        complete and right subtree is perfect. We use the helper function __complete to check if 
-        our tree is complete or not.
+        A BST is complete if the BST is a perfect tree up until the last level 
+        where all of the nodes are pushed to the left. This means that we have 
+        two cases. Either the left subtree is a perfect tree and right subtree 
+        is complete or the left subtree is complete and right subtree is perfect. 
+        We use the helper function __complete to check if our tree is complete or not.
         INPUT: None
         OUTPUT:
             True if complete. False if not.
         
-        Runtime -- O(n) -- This function runs in time proportional to n because we have to look at 
-        every single node and its children in this tree.
+        Runtime -- O(n) -- This function runs in time proportional to n because 
+        we have to look at every single node and its children in this tree.
         '''
 
         return self.__complete(self.root)
@@ -810,8 +820,8 @@ class BinarySearchTree():
         OUTPUT:
             A list of all paths to leaf nodes from the root.
         
-        Runtime -- O(n)  -- The runtime of this function is proportional to n because we have to 
-        go thorugh every single node in order to reach the leaf nodes in our tree.
+        Runtime -- O(n)  -- The runtime of this function is proportional to n because we have 
+        to  go thorugh every single node in order to reach the leaf nodes in our tree.
         '''
 
         paths = []
@@ -853,8 +863,8 @@ class BinarySearchTree():
         OUTPUT:
             Number of treenodes in our BST.
 
-        Runtime -- O(n) -- This function runs in time proportional to n because we have to visit 
-        every single node.
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to 
+        visit every single node.
         '''
 
         if not subRoot:
