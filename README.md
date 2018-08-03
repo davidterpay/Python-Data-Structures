@@ -9,7 +9,7 @@ Stacks
 
 Queues
 
-Binary Trees (IN PROGRESS)
+Binary Trees
 
 ### I still want to add :
 
