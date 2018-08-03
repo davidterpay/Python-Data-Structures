@@ -31,72 +31,72 @@ class TreeNode():
     
     def getParent(self):
         '''
-        Since our variables are encapsulated, this function will allow us to directly access the
-        parent of our node.
+        Since our variables are encapsulated, this function will allow us 
+        to directly access the parent of our node.
         '''
 
         return self.__parent
     
     def setParent(self, parent):
         '''
-        Since our variables are encapsulated, this function will allow us to directly change the
-        parent of our node.
+        Since our variables are encapsulated, this function will allow us to 
+        directly change the parent of our node.
         '''
 
         self.__parent = parent
     
     def getLeft(self):
         '''
-        Since our variables are encapsulated, this function will allow us to directly access the
-        left child.
+        Since our variables are encapsulated, this function will allow us 
+        to directly access the left child.
         '''
 
         return self.__left
 
     def setLeft(self, left):
         '''
-        Since our variables are encapsulated, this function will allow us to directly change the
-        left child.
+        Since our variables are encapsulated, this function will allow us to 
+        directly change the left child.
         '''
 
         self.__left = left
     
     def getRight(self):
         '''
-        Since our variables are encapsulated, this function will allow us to directly access the
-        right child.
+        Since our variables are encapsulated, this function will allow us to 
+        directly access the right child.
         '''
 
         return self.__right
 
     def setRight(self, right):
         '''
-        Since our variables are encapsulated, this function will allow us to directly change the
-        left child.
+        Since our variables are encapsulated, this function will allow us to 
+        directly change the left child.
         '''
 
         self.__right = right
     
     def getData(self):
         '''
-        Since our variables are encapsulated, this function will allow us to directly access the
-        data.
+        Since our variables are encapsulated, this function will allow us to 
+        directly access the data.
         '''
 
         return self.__data
 
     def setData(self, data):
         '''
-        Since our variables are encapsulated, this function will allow us to directly change the
-        data.
+        Since our variables are encapsulated, this function will allow us to 
+        directly change the data.
         '''
 
         self.__data = data
     
     def __str__(self):
         '''
-        This function will give us a string representation of our treenode. This will allow us to
-        print each of the nodes if we want to print a tree.
+        This function will give us a string representation of our treenode. 
+        This will allow us to print each of the nodes if we want to print a tree.
         '''
         
         leftData = None
