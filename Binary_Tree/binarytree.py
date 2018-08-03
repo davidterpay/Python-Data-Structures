@@ -680,6 +680,8 @@ class BinarySearchTree():
 
         props = {'Nodes' : len(self)}
         props['Height'] = self.height()
+        props['Longest Path'] = self.longestPath()
+        props['Sum Distances'] = self.sumDistance()
         props['Perfect'] = self.perfect()
         props['Complete'] = self.complete()
         props['Full'] = self.full()
