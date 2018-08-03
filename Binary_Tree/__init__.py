@@ -1,2 +1,2 @@
-from Binary_Tree import BinarySearchTree
-from Binary_Tree import TreeNode
+from Binary_Tree import binarytree
+from Binary_Tree import treenode

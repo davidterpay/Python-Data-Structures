@@ -605,8 +605,8 @@ class BinarySearchTree():
         OUTPUT:
             True if complete. False if not.
         
-        Runtime -- O(n) -- This function runs in time proportional to n because we have to look at every single node 
-        and its children in this tree.
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to look at 
+        every single node and its children in this tree.
         '''
 
         return self.__complete(self.root)
@@ -839,12 +839,26 @@ class BinarySearchTree():
         OUTPUT:
             Number of treenodes in our BST.
 
-        Runtime -- O(n) -- This function runs in time proportional to n because we have to visit every single node.
+        Runtime -- O(n) -- This function runs in time proportional to n because we have to visit 
+        every single node.
         '''
 
         if not subRoot:
             return 0
         return 1 + self.numNodes(subRoot.getRight()) + self.numNodes(subRoot.getLeft())
+    
+    def toString(self,node,depth):
+        '''
+        Helps us visualize the tree. Viewed horizontally.
+        '''
+
+        ret = ""
+        if node.getRight():
+            ret += self.toString(node.getRight(),depth + 1)
+        ret += "\n\n" + ("     "*depth) + str(node.getData())
+        if node.getLeft():
+            ret += self.toString(node.getLeft(), depth + 1)
+        return ret
 
     def clear(self, subRoot):
         '''
@@ -883,3 +897,10 @@ class BinarySearchTree():
         '''
 
         self.clear(self.root)
+    
+    def __str__(self, depth=0):
+        '''
+        Helps us visualize the tree. Viewed horizontally.
+        '''
+
+        return self.toString(self.root,0)
