@@ -11,9 +11,9 @@ Queues
 
 Binary Trees
 
-### I still want to add :
+Heaps (In progress)
 
-Heaps
+### I still want to add :
 
 AVL Trees
 
