@@ -269,6 +269,19 @@ class LinkedList:
             self.tail = prevNode
             self.length -= 1
 
+    def insertList(self,lst):
+        '''
+        This adds functionality to make a list into a linked list.
+        INPUT:
+            lst: List of nodes
+        OUTPUT:
+            Linked list with nodes in order of the list.
+
+        '''
+        
+        for node in lst:
+            self.addFront(node)
+
     def get(self, index):
         '''
         Return a certain node based on a inputed index

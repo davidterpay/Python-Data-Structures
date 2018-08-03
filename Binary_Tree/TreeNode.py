@@ -98,6 +98,7 @@ class TreeNode():
         This function will give us a string representation of our treenode. This will allow us to
         print each of the nodes if we want to print a tree.
         '''
+        
         leftData = None
         rightData = None
         parentData = None

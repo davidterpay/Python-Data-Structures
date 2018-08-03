@@ -3,7 +3,8 @@ sys.path.append('../')
 from Stacks import Stack # Will be used in traversals; visit Stacks folder for docs
 from Queues import Queue # Will be used in traversals; visit Queues folder for docs
 import TreeNode # Importing TreeNode class
-import math
+from Linked_List import LinkedList # Will be used in converting BST to linked list; visit Linked_List for code and docs
+from functools import reduce # Used in longestPath
 '''
 Written by David Terpay
 
@@ -684,10 +685,12 @@ class BinarySearchTree():
         props['Full'] = self.full()
         props['Balanced'] = self.balanced()
         props['Balance Factor'] = self.balanceFactor(self.root)
-        props['Inorder Traversal'] = [node.getData() for node in self.inOrderTraverasl()]
-        props['Preorder Traversal'] = [node.getData() for node in self.preOrderTraversal()]
-        props['Postorder Traversal'] = [node.getData() for node in self.postOrderTraverasl()]
-        props['Level order Traversal'] = [node.getData() for node in self.levelOrderTraversal()]
+        def dataify(node):
+            return node.getData()
+        props['Inorder Traversal'] = list(map(dataify, self.inOrderTraverasl()))
+        props['Preorder Traversal'] = list(map(dataify, self.preOrderTraversal()))
+        props['Postorder Traversal'] = list(map(dataify, self.postOrderTraverasl()))
+        props['Level order Traversal'] = list(map(dataify, self.levelOrderTraversal()))
         return props
 
     def printProperties(self):
@@ -703,28 +706,131 @@ class BinarySearchTree():
             print(str(key) + ' : ' + str(value))
         print('}')
 
-    def sumDistance(self):  # Work on this
-        pass
+    def sumDistance(self):
+        '''
+        CS225 UIUC practice problem - 
+        Each node in a tree has a distance from the root node - the depth of that
+        node, or the number of edges along the path from that node to the root. This
+        function returns the sum of the distances of all nodes to the root node (the
+        sum of the depths of all the nodes). Your solution should take O(n) time,
+        where n is the number of nodes in the tree.
+        @return The sum of the distances of all nodes to the root
+        This function uses the helper function of __sumdistance.
+        INPUT: None
+        OUTPUT:
+            Sum of the distances in our tree from every node to our root.
+
+        Runtime -- O(n) -- This runs in time proportional to n because we visit every node in
+        our tree exactly once.
+        '''
+
+        sums = 0
+        return self.__sumDistance(-1, self.root, sums)
     
+    def __sumDistance(self,nodes, subRoot, sums):
+        '''
+        CS225 UIUC practice problem - 
+        Each node in a tree has a distance from the root node - the depth of that
+        node, or the number of edges along the path from that node to the root. This
+        function returns the sum of the distances of all nodes to the root node (the
+        sum of the depths of all the nodes). Your solution should take O(n) time,
+        where n is the number of nodes in the tree.
+        @return The sum of the distances of all nodes to the root
+        INPUT: 
+            nodes: This helps us keep track of the amount of nodes above the current node.
+                this is particularly helpful when you add on nodes as you move down a tree.
+            subRoot: The node that we are recursing on
+            sums: We pass this varaible as a refernce throughout the entire run through of our function.
+        OUTPUT:
+            Sum of the distances in our tree from every node to our root.
+
+        Runtime -- O(n) -- This runs in time proportional to n because we visit every node in
+        our tree exactly once.
+        '''
+
+        sums += nodes + 1
+        if subRoot:
+            if subRoot.getLeft():
+                sums = self.__sumDistance(nodes + 1, subRoot.getLeft(), sums)
+            if subRoot.getRight():
+                sums = self.__sumDistance(nodes + 1, subRoot.getRight(), sums)
+        return sums
+
     def longestPath(self):
-        lst = []
-        lst.append(self.root)
-        self.__longestPath(self.root,lst)
-        return [node.getData() for node in lst if node]
+        '''
+        This function will return the longest path from our root to any leaf node.
+        This function uses printPaths and reduce in order to iterate through the list 
+        of all paths in our BST. 
+        ***There may be multiple longest paths***
+        INPUT: None
+        OUTPUT:
+            Longest path in our BST
 
-    def __longestPath(self, subRoot, lst):  # Work on this
+        Runtime -- O(n) -- Since print paths runs in O(n) time, and since we iterate through the list
+        returned by that function once, our total runtime is O(n).
+        '''
+
+        return reduce(lambda x,y: x if len(x) >= len(y) else y, self.printPaths())
+
+    def bstToLinkedLst(self):
+        '''
+        This converts a binary search tree into a linked list. In order to achieve this we need
+        to do a inorder traversal and then simply insert the list into our linked list.
+        INPUT: None
+        OUTPUT:
+            Binary tree to a doubly linked list
+        
+        '''
+
+        linked = LinkedList.LinkedList()
+        lst = self.inOrderTraverasl()
+        linked.insertList([node.getData() for node in lst])
+        return linked
+
+    def printPaths(self):
+        '''
+        Creates list of all the possible paths from the root of the tree to any leaf
+        node and adds it to another list. Path is, all sequences starting at the root node and continuing
+        downwards, ending at a leaf node. Paths ending in a left node should be
+        added before paths ending in a node further to the right. This uses the helper function __printPaths().
+        INPUT: None
+        OUTPUT:
+            A list of all paths to leaf nodes from the root.
+        
+        Runtime -- O(n)  -- The runtime of this function is proportional to n because we have to 
+        go thorugh every single node in order to reach the leaf nodes in our tree.
+        '''
+
+        paths = []
+        self.__printPaths(self.root,[],paths)
+        return paths
+
+    def __printPaths(self,subRoot, path, paths):
+        '''
+        Creates list of all the possible paths from the root of the tree to any leaf
+        node and adds it to another list. Path is, all sequences starting at the root node and continuing
+        downwards, ending at a leaf node. Paths ending in a left node should be
+        added before paths ending in a node further to the right.
+        INPUT:
+            subRoot: Root that we will be recursing on
+            path: The current path we are looking on
+            paths: All of the paths in our BST
+        OUTPUT:
+            A list of all paths to leaf nodes from the root.
+        
+        Runtime -- O(n)  -- The runtime of this function is proportional to n because we have to 
+        go thorugh every single node in order to reach the leaf nodes in our tree.
+        '''
+
         if not subRoot:
-            return -1
-        if self.__longestPath(subRoot.getRight(), lst) > self.__longestPath(subRoot.getLeft(),lst):
-            lst.append(subRoot.getRight())
-            return 1 + self.__longestPath(subRoot.getRight(), lst)
+            return
+        path.append(subRoot.getData())
+        if not subRoot.getRight() and not subRoot.getLeft():
+            paths.append(path)
         else:
-            lst.append(subRoot.getLeft())
-            return 1 + self.__longestPath(subRoot.getLeft(), lst)
-    
-    def printPaths(self):  # Work on this
-        pass
-
+            newPath = path.copy()
+            self.__printPaths(subRoot.getLeft(), path, paths)
+            self.__printPaths(subRoot.getRight(), newPath, paths)
 
     def numNodes(self,subRoot):
         '''
@@ -771,13 +877,9 @@ class BinarySearchTree():
         return self.numNodes(self.root)
     
     def __del__(self):
+
         '''
         Deletes all memory associated with the creation of a BST.
         '''
 
         self.clear(self.root)
-
-
-bst = BinarySearchTree()
-bst.insertList(15,30,0,-15)
-print(bst.longestPath())
