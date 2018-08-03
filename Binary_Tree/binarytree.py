@@ -295,8 +295,8 @@ class BinarySearchTree():
         OUTPUT:
             Mirrored BST
         
-        Runtime -- O(n) -- Since we have to visit every node in our tree, the runtime is O(n) because
-        we have to visit every single node.
+        Runtime -- O(n) -- Since we have to visit every node in our tree, the runtime is O(n) 
+        because we have to visit every single node.
         '''
 
         self.__mirror(self.root)
