@@ -13,9 +13,9 @@ Binary Trees
 
 Heaps (In progress)
 
-### I still want to add :
+AVL Trees (In progress)
 
-AVL Trees
+### I still want to add :
 
 KDTrees
 
