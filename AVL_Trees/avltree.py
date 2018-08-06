@@ -48,12 +48,12 @@ class AVLTree(BinarySearchTree):
         elif data > node.getData():
             if node.getRight():
                 self.__insert(data, node.getRight())
-                heightBalance = self.balanceFactor(node)
-                if heightBalance >= 2:
-                    if self.balanceFactor(node.getRight()) == 1:
-                        self.leftRotation(node)
-                    else:
-                        self.rightLeftRotation(node)
+                # heightBalance = self.balanceFactor(node)
+                # if heightBalance >= 2:
+                #     if self.balanceFactor(node.getRight()) == 1:
+                #         self.leftRotation(node)
+                #     else:
+                #         self.rightLeftRotation(node)
             else:
                 newNode = TreeNode(data)
                 newNode.setParent(node)
@@ -61,16 +61,17 @@ class AVLTree(BinarySearchTree):
         else:
             if node.getLeft():
                 self.__insert(data, node.getLeft())
-                heightBalance = self.balanceFactor(node)
-                if heightBalance <= -2:
-                    if self.balanceFactor(node.getLeft()) == -1:
-                        self.rightRotation(node)
-                    else:
-                        self.leftRightRotation(node)
+                # heightBalance = self.balanceFactor(node)
+                # if heightBalance <= -2:
+                #     if self.balanceFactor(node.getLeft()) == -1:
+                #         self.rightRotation(node)
+                #     else:
+                #         self.leftRightRotation(node)
             else:
                 newNode = TreeNode(data)
                 newNode.setParent(node)
                 node.setLeft(newNode)
+        self.rebalance(node)
     
     def remove(self, data):
         '''
@@ -155,10 +156,10 @@ class AVLTree(BinarySearchTree):
             else:
                 self.rightLeftRotation(node)
         if heightBalance <= -2:
-            if heightBalanceLeft == -1:
-                self.rightRotation(node)
-            else:
+            if heightBalanceLeft == 1:
                 self.leftRightRotation(node)
+            else:
+                self.rightRotation(node)
 
     def leftRotation(self, node):
         '''
@@ -181,6 +182,8 @@ class AVLTree(BinarySearchTree):
 
         left = node.getLeft()
         leftRight = left.getRight()
+
+
         left.setRight(leftRight.getLeft())
         leftRight.setLeft(left)
         left.setParent(leftRight)
@@ -219,5 +222,6 @@ class AVLTree(BinarySearchTree):
         self.leftRotation(node)
 
 avl = AVLTree()
-avl.insertList(100, 50, 200, 0, 12, 4, 0, -234, -543, 40,42)
+avl.insertList(100,50,200,0,12,4,-234,-543,40)
 print(avl)
+print(avl.root.getRight().getLeft())
