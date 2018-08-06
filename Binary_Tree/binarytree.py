@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 from Stacks import Stack # Will be used in traversals; visit Stacks folder for docs
 from Queues import Queue # Will be used in traversals; visit Queues folder for docs
-import treenode # Importing TreeNode class
+from Binary_Tree import treenode # Importing TreeNode class
 from Linked_List import LinkedList # Will be used in converting BST to linked list; visit Linked_List for code and docs
 from functools import reduce # Used in longestPath
 '''
@@ -176,7 +176,7 @@ class BinarySearchTree():
         ither complete or perfect. But the runtime can be as bad as O(n) if we simply have a 
         linked list.
         '''
-
+        
         node = self.find(data)
         if node is None:
             return
@@ -264,9 +264,9 @@ class BinarySearchTree():
         to visit all paths to determine which one is the longest.
         '''
 
-        return self.__height(self.root)
+        return self.heightHelper(self.root)
 
-    def __height(self, subRoot):
+    def heightHelper(self, subRoot):
         '''
         This function will return the height of our BST from any given nodee. It is a recursive function 
         that runs through all of the paths in our BST. This makes our runtime rather slow at O(n). It will 
@@ -284,7 +284,7 @@ class BinarySearchTree():
 
         if subRoot == None:
             return -1
-        return 1 + max(self.__height(subRoot.getLeft()), self.__height(subRoot.getRight()))
+        return 1 + max(self.heightHelper(subRoot.getLeft()), self.heightHelper(subRoot.getRight()))
 
     def mirror(self):
         '''
@@ -573,7 +573,7 @@ class BinarySearchTree():
         have to visit every node in our BST
         '''
 
-        return self.numNodes(subRoot) == pow(2, self.__height(subRoot) + 1) - 1 if subRoot else True
+        return self.numNodes(subRoot) == pow(2, self.heightHelper(subRoot) + 1) - 1 if subRoot else True
 
     def full(self):
         '''
@@ -675,8 +675,8 @@ class BinarySearchTree():
     def balanceFactor(self,subRoot):
         '''
         This function will return true the absolute difference in height 
-        between the left and right subtrees is less than or equal to 1. We use 
-        balanceFactor to check the heightt of the left and right subtrees. 
+        between the right and left subtrees is less than or equal to 1. We use 
+        balanceFactor to check the height of the left and right subtrees. 
         We will use this function when we inherit this class to make AVL trees.
         INPUT: 
             subRoot = The subRoot whose height we will be checking
@@ -687,7 +687,7 @@ class BinarySearchTree():
         we have to find the height of the right and left subtrees. That requires O(n) time.
         '''
 
-        return self.__height(subRoot.getLeft()) - self.__height(subRoot.getRight())
+        return self.heightHelper(subRoot.getRight()) - self.heightHelper(subRoot.getLeft())
 
     def properties(self):
         '''
