@@ -13,7 +13,7 @@ Binary Trees
 
 Heaps (In progress)
 
-AVL Trees (In progress)
+AVL Trees
 
 ### I still want to add :
 
