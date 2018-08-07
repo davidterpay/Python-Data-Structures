@@ -218,7 +218,7 @@ class BinarySearchTree():
             iop = self.findIOP(node.getLeft())
             node.getRight().setParent(iop)
             prevHead = iop.getParent()
-            node.getLeft().setParent(iop)
+            node.getLeft().setParent(iop) #say we exclude this
             iop.setRight(node.getRight())
             if prevHead.getData() != node.getData():
                 iop.getParent().setRight(iop.getLeft())
@@ -230,7 +230,7 @@ class BinarySearchTree():
                 iop.setParent(None)
             else:
                 iop.setParent(parent)
-                if parent.getLeft().getData() == node.getData():
+                if parent.getLeft() and parent.getLeft().getData() == node.getData():
                     parent.setLeft(iop)
                 else:
                     parent.setRight(iop)

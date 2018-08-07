@@ -446,7 +446,7 @@ class AVLTree(BinarySearchTree):
             iop.setParent(None)
         else:
             iop.setParent(parent)
-            if parent.getLeft().getData() == node.getData():
+            if parent.getLeft() and parent.getLeft().getData() == node.getData():
                 parent.setLeft(iop)
             else:
                 parent.setRight(iop)
