@@ -13,7 +13,7 @@ of insertion, removal, and find are O(lg(n)). We will inherit the BST class that
 I previously created. You can check out the code and documentation in the Binary_Tree
 folder in this repository.
 
-For more reference you can check out this website to further understand AVL trees.
+For more reference you can check out this website.
 https://en.wikipedia.org/wiki/AVL_tree 
 '''
 
@@ -27,7 +27,7 @@ class AVLTree(BinarySearchTree):
 
         self.root = root
 
-    def buildRandomTree(self, number, high, low):
+    def buildRandomTree(self, number, low, high):
         '''
         Builds a random tree with inputed high bound and low bound.
         '''
@@ -202,7 +202,6 @@ class AVLTree(BinarySearchTree):
         node.setLeft(leftRight)
         self.rightRotation(node)
 
-    
     def rightRotation(self, node):
         '''
         3. rightRotation - This is when we have a stick which is orientated towards the left.
@@ -236,7 +235,6 @@ class AVLTree(BinarySearchTree):
         if left.getRight():
             left.getRight().setParent(node)
         left.setRight(node)
-
 
     def rightLeftRotation(self, node):
         '''
@@ -272,6 +270,7 @@ class AVLTree(BinarySearchTree):
         rightLeft.setRight(right)
         right.setParent(rightLeft)
         self.leftRotation(node)
+
     def insert(self, data):
         '''
         This function will insert a node into our AVL tree. We overwrite 
