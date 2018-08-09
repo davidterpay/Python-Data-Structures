@@ -11,13 +11,13 @@ Queues
 
 Binary Trees
 
-Heaps (In progress)
+Heaps
 
 AVL Trees
 
-### I still want to add :
+KDTrees (in progress)
 
-KDTrees
+### I still want to add :
 
 Graphs
 
