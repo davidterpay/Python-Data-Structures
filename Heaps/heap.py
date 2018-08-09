@@ -158,8 +158,15 @@ class Heap():
 
     def __minChild(self, index):
         '''
-        Used for heapifydown
+        This will return the minimum priority child. This function will 
+        be vital in heapifydown. In a max heap, we would search for the
+        maximum priority child.
+        INPUT:
+            index: Index we are going to find the children of 
+        OUTPUT:
+            Minimum priority child
         '''
+
         if self.rightChild(index) <= self.size:
             if self.array[self.rightChild(index)] < self.array[self.leftChild(index)]:
                 return self.rightChild(index)
