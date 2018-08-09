@@ -547,7 +547,7 @@ class BinarySearchTree():
         '''
         A perfect tree is a tree that has two nodes and has every node on the same level
         for the last level. In other words, the last level has a full level. A perfect tree
-        has only one struture for any given height. We use __perfect in this function as a 
+        has only one struture for any given height. We use subRootIsPerfect in this function as a 
         helper function.
         INPUT: None
         OUTPUT:
@@ -557,9 +557,9 @@ class BinarySearchTree():
         visit every node in our BST
         '''
         
-        return self.__perfect(self.root)
+        return self.subRootIsPerfect(self.root)
 
-    def __perfect(self,subRoot):
+    def subRootIsPerfect(self,subRoot):
         '''
         A perfect tree is a tree that has two nodes and has every node on the same level
         for the last level. In other words, the last level has a full level. A perfect tree
@@ -587,9 +587,9 @@ class BinarySearchTree():
         have to visit every node in our BST
         '''
 
-        return self.__full(self.root)
+        return self.subRootIsFull(self.root)
     
-    def __full(self, subRoot):
+    def subRootIsFull(self, subRoot):
         '''
         This function will tell us whether our tree is full. A tree is full if every node
         has exactly 2 or 0 children.
@@ -609,7 +609,7 @@ class BinarySearchTree():
         elif not subRoot.getLeft() and subRoot.getRight():
             return False
         else:
-            return self.__full(subRoot.getRight()) and self.__full(subRoot.getLeft())
+            return self.subRootIsFull(subRoot.getRight()) and self.subRootIsFull(subRoot.getLeft())
 
     def complete(self):
         '''
@@ -617,7 +617,7 @@ class BinarySearchTree():
         where all of the nodes are pushed to the left. This means that we have 
         two cases. Either the left subtree is a perfect tree and right subtree 
         is complete or the left subtree is complete and right subtree is perfect. 
-        We use the helper function __complete to check if our tree is complete or not.
+        We use the helper function subRootIsComplete to check if our tree is complete or not.
         INPUT: None
         OUTPUT:
             True if complete. False if not.
@@ -626,9 +626,9 @@ class BinarySearchTree():
         we have to look at every single node and its children in this tree.
         '''
 
-        return self.__complete(self.root)
+        return self.subRootIsComplete(self.root)
     
-    def __complete(self, subRoot):
+    def subRootIsComplete(self, subRoot):
         '''
         A BST is complete if the BST is a perfect tree up until the last level where all of
         the nodes are pushed to the left. This means that we have two cases. Either the
@@ -651,7 +651,7 @@ class BinarySearchTree():
             if r and not l:
                 return False
             else:
-                return self.__perfect(l) and self.__complete(r) or self.__complete(l) and self.__perfect(r)
+                return self.subRootIsPerfect(l) and self.subRootIsComplete(r) or self.subRootIsComplete(l) and self.subRootIsPerfect(r)
         else:
             return True
 
