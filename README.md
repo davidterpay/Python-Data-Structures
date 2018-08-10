@@ -3,19 +3,19 @@ This is an on going project of mine - to code every major data structure in pyth
 
 ### So far I have :
 
-Linked Lists
-
-Stacks
-
-Queues
-
-Binary Trees
-
 Heaps
 
 AVL Trees
 
 KDTrees -- K Dimensional Trees (in progress)
+
+Binary Trees
+
+Linked Lists
+
+Stacks
+
+Queues
 
 ### I still want to add :
 
