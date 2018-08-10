@@ -27,4 +27,8 @@ Graphs
 
 Hashing of some sort
 
+Skip List
+
 Trie (prefix tree)
+
+Huffman Encoding (Maybe in its own folder)
