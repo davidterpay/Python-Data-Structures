@@ -19,10 +19,12 @@ KDTrees (in progress)
 
 ### I still want to add :
 
-Graphs
-
 BTrees
 
 Disjoint Sets
 
+Graphs
+
 Hashing of some sort
+
+Trie (prefix tree)
