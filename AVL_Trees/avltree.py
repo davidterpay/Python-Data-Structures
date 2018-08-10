@@ -13,6 +13,13 @@ of insertion, removal, and find are O(lg(n)). We will inherit the BST class that
 I previously created. You can check out the code and documentation in the Binary_Tree
 folder in this repository.
 
+ANY SORT OF RANGE OR ANY SORT OF NEAREST NEIGHBOR USE AVL
+AVL trees are good for when you want range based searches and need to find the nearest 
+neighbor. They however are not good for big data because we have to store all of the 
+data in main memory (Btree is better in that case). Additionally, AVL trees are a
+step up from arrays in terms of big - O but still are not ideal in the sense that
+we should see a runtime of O(1) which can be found in hashing.
+
 For more reference you can check out this website.
 https://en.wikipedia.org/wiki/AVL_tree 
 '''
