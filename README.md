@@ -13,9 +13,9 @@ Binary Trees
 
 Heaps
 
-AVL Trees (Very similart to Red Black tree; kinda similar to splay tree)
+AVL Trees
 
-KDTrees (in progress)
+KDTrees -- K Dimensional Trees (in progress)
 
 ### I still want to add :
 
