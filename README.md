@@ -13,7 +13,7 @@ Binary Trees
 
 Heaps
 
-AVL Trees
+AVL Trees (Very similart to Red Black tree; kinda similar to splay tree)
 
 KDTrees (in progress)
 
