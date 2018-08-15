@@ -1,7 +1,8 @@
 import sys
 sys.path.append('../')
 from Binary_Tree.binarytree import BinarySearchTree
-from Binary_Tree.treenode import TreeNode
+from kdtreenode import KDTreeNode
+from functools import reduce
 
 class KDTree(BinarySearchTree):
     def __init__(self, dimensions):
@@ -14,21 +15,21 @@ class KDTree(BinarySearchTree):
         if self.root:
             self.__insert(data, self.root, 0)
         else:
-            self.root = TreeNode(data)
+            self.root = KDTreeNode(data, 0)
         
     def __insert(self, data, node, dim):
         if self.smallerDimValue(data, node, dim):
             if node.getLeft():
                 self.__insert(data, node.getLeft(), (dim + 1) % self.dimensions)
             else:
-                newNode = TreeNode(data)
+                newNode = KDTreeNode(data, dim)
                 newNode.setParent(node)
                 node.setLeft(newNode)
         else:
             if node.getRight():
                 self.__insert(data, node.getRight(), (dim + 1) % self.dimensions)
             else:
-                newNode = TreeNode(data)
+                newNode = KDTreeNode(data, dim)
                 node.setRight(newNode)
                 newNode.setParent(node)
 
@@ -45,6 +46,22 @@ class KDTree(BinarySearchTree):
         
     def __remove(self, data):
         pass
+    
+    def findMin(self, node, currentDimension, dim):
+        if not node:
+            return None
+        elif currentDimension == dim:
+            if node.getLeft():
+                self.findMin(node.getLeft(), (currentDimension + 1) % self.dimensions, dim)
+            else:
+                return node
+        else:
+            cd = (currentDimension + 1) % self.dimensions
+            return self.minimum(dim, node, self.findMin(node.getLeft(), cd, dim), self.findMin(node.getRight(), cd, dim))
+
+    def minimum(self, dimension, *args):
+        lst = [x for x in args if x]
+        return lst[0] if len(lst) == 1 else reduce(lambda x,y: x if x[dimension] < y[dimension] else y, lst)
 
     def find(self, data):
         return self.__find(data)
@@ -75,3 +92,5 @@ kdtree = KDTree(2)
 lst = [(randint(-10, 10),randint(-10,10)) for x in range(3)]
 kdtree.insertList(lst)
 print(kdtree)
+print('\n\n\n')
+print(kdtree.root.getRight())
