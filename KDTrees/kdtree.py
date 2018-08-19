@@ -57,12 +57,13 @@ class KDTree(BinarySearchTree):
                     right.setParent(node)
                 node.setRight(right)
             elif node.getLeft(): # left child exists
-                findMin = self.findMin(node.getleft(), (node.getDimDis() + 1) % self.dimensions, node.getDimDis())
+                findMin = self.findMin(node.getLeft(), (node.getDimDis() + 1) % self.dimensions, node.getDimDis())
                 node.setData(findMin.getData())
                 right = self.__remove(node.getData(), node.getLeft(), (node.getDimDis() + 1) % self.dimensions)
                 if right:
                     right.setParent(node)
                 node.setRight(right)
+                node.setLeft(None)
             else: # zero child
                 node = None
             if not parent:
@@ -120,13 +121,12 @@ class KDTree(BinarySearchTree):
         pass
 
 from random import randint
-kdtree = KDTree(1)
-# lst = [(0,10),(10,0),(-10,0),(-30,14),(-15,-30),(60,200),(50,730),(-100,-100),(-300,50)]
-lst = [[10],[0],[20]]
+kdtree = KDTree(2)
+lst = [(0,10),(10,0),(-10,0),(-30,14),(-15,-30),(60,200),(50,730),(-100,-100),(-300,50)]
 kdtree.insertList(lst)
 print(kdtree)
 print('\n\n\n')
-kdtree.remove([10])
+kdtree.remove((0, 10))
 print('\n\n\n')
 print(kdtree)
 print('\n\n\n')
