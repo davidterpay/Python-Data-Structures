@@ -4,11 +4,45 @@ from Binary_Tree.binarytree import BinarySearchTree
 from kdtreenode import KDTreeNode
 from functools import reduce
 
+'''
+Written by David Terpay
+This is a KDTree class I wrote that includes some of the most important
+functionality in CS as a whole. When I say that I am referencing range based
+queries and finding nearest neighbors to a data point. I inherited the binary search
+tree class I previously created since a KDTree is a type of BST. This allows for nearly
+all of the functionality found the super class (including traversals, depth, breadth first
+searches, etc.). Since KDTrees are harder than most data structures, I will link the extremely
+helpful websites I found when I was building this class.
+
+https://courses.engr.illinois.edu/cs225/sp2018/mps/5/
+https://en.wikipedia.org/wiki/K-d_tree
+https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/kdtrees.pdf
+http://www.cs.cornell.edu/courses/cs4780/2015fa/web/lecturenotes/lecturenote16.html
+'''
+
 class KDTree(BinarySearchTree):
     def __init__(self, dimensions):
         '''
+        This is a constructor that will give us a default, basic 
+        KDTree. It will not create a nice sorted and relatively
+        balanced KDtree. In order to get that, construct a KDTree, 
+        and then simply insert a list into createBalancedTree() function.
+        This will sort the list in multidimensional space using quickselect, 
+        and will recursively construct your tree from your list which will
+        be an attribute of the object --> points. There are three variables
+        we will keep track of
+            root = Will allow us to maintain our tree structure. We inherited
+                the Binary Search Tree class as well as all of its useful 
+                properties.
+            
+            points = A sorted list of points (if we called createBalancedTree),
+                otherwise unsorted list.
+            
+            dimensions = The number of dimensions our data is in
         '''
-        self.root = None
+
+        super().__init__()
+        self.points = []
         self.dimensions = dimensions
 
     def insert(self, data):
@@ -17,6 +51,7 @@ class KDTree(BinarySearchTree):
             self.__insert(node, self.root, 0)
         else:
             self.root = KDTreeNode(data, 0)
+            self.points.append(self.root)
         
     def __insert(self, newNode, node, dim):
         if self.smallerDimValue(newNode, node, dim):
@@ -26,6 +61,7 @@ class KDTree(BinarySearchTree):
                 newNode.setDimDis((dim + 1) % self.dimensions)
                 newNode.setParent(node)
                 node.setLeft(newNode)
+                self.points.append(newNode)
         else:
             if node.getRight():
                 self.__insert(newNode, node.getRight(), (dim + 1) % self.dimensions)
@@ -33,6 +69,7 @@ class KDTree(BinarySearchTree):
                 newNode.setDimDis((dim + 1) % self.dimensions)
                 node.setRight(newNode)
                 newNode.setParent(node)
+                self.points.append(newNode)
 
     def insertList(self, lst):
         for data in lst:
@@ -53,6 +90,7 @@ class KDTree(BinarySearchTree):
         if not node:
             return None
         if node.getData() == data:
+            self.points.remove(node)
             parent = node.getParent()
             if node.getRight(): # right child exists
                 findMin = self.findMin(node.getRight(), (node.getDimDis() + 1) % self.dimensions, node.getDimDis())
@@ -61,6 +99,7 @@ class KDTree(BinarySearchTree):
                 if right:
                     right.setParent(node)
                 node.setRight(right)
+                self.points.append(node)
             elif node.getLeft(): # left child exists
                 findMin = self.findMin(node.getLeft(), (node.getDimDis() + 1) % self.dimensions, node.getDimDis())
                 node.setData(findMin.getData())
@@ -69,6 +108,7 @@ class KDTree(BinarySearchTree):
                     right.setParent(node)
                 node.setRight(right)
                 node.setLeft(None)
+                self.points.append(node)
             else: # zero child
                 node = None
             if not parent:
@@ -107,7 +147,7 @@ class KDTree(BinarySearchTree):
         else:
             return self.__find(data, node.getLeft(), (dim + 1) % self.dimensions)
 
-    def createBalancedTree(self, lst):
+    def createBalancedTree(self, lst = None):
         '''
         KD-trees are created recursively; at any stage of the 
         construction, the median value in the current dimension 
@@ -121,15 +161,19 @@ class KDTree(BinarySearchTree):
         total number: a 3D tree will have levels split by dimension 0, 
         1, 2, 0, 1, 2, etc.
         '''
-
-        data = self.quickselect(lst)
-        self.root = self.__buildTree(0, len(data) - 1, data, 0)
-        return list(map(KDTreeNode.getData, data))
+        if lst:
+            data = self.quickselect(lst)
+            self.root = self.__buildTree(0, len(data) - 1, data, 0)
+            self.points = data
+        else:
+            self.points = self.quickselect()
+            self.root = self.__buildTree(0, len(self.points) - 1, self.points, 0)
+        return list(map(KDTreeNode.getData, self.points))
 
     def __buildTree(self, left, right, lst, dim):
         if left > right:
             return
-        median = (left + right) // 2
+        median = (left + right + 1) // 2
         root = lst[median]
         root.setDimDis(dim)
         right = self.__buildTree(median + 1, right, lst, (dim + 1) % self.dimensions)
@@ -144,7 +188,7 @@ class KDTree(BinarySearchTree):
 
     def __sort(self, lst, left, right, dim):
         if left < right:
-            median = (left + right) // 2
+            median = (left + right + 1) // 2
             # We need pivot to correctly put median in the middle
             # So that we can properly sort the other dimensions and halves
             self.pivot(lst, left, right, median, dim)
@@ -177,33 +221,12 @@ class KDTree(BinarySearchTree):
         lst[low] = temp
         return low
 
-    def quickselect(self, lst):
-        data = [KDTreeNode(value, 0) for value in lst]
-        return self.__sort(data, 0, len(data) - 1, 0)
-
-    # def createLeafTree(self, lst = None):
-    #     if not lst:
-    #         lst = self.levelOrderTraversal()
-    #     print(lst)
-    #     sortedList = self.quickselect(lst)
-    #     print(sortedList)
-    #     previousDim = self.dimensions
-    #     self.dimensions = 1
-    #     self.root = self.__leafTree(0, len(sortedList) - 1, 0, sortedList)
-    
-    # def __leafTree(self, left, right, dim, sortedList):
-    #     if left <= right:
-    #         median = (left + right) // 2
-    #         root = KDTreeNode(sortedList[median].getData()[dim], 0)
-    #         left = self.__leafTree(median + 1, right, (dim + 1) % self.dimensions, sortedList)
-    #         right = self.__leafTree(left, median - 1, (dim + 1) % self.dimensions, sortedList)
-    #         if left:
-    #             left.setParent(root)
-    #         if right:
-    #             right.setParent(root)
-    #         root.setRight(right)
-    #         root.setLeft(left)
-    #         return root
+    def quickselect(self, lst = None):
+        if lst:
+            data = [KDTreeNode(value, 0) for value in lst]
+            return self.__sort(data, 0, len(data) - 1, 0)
+        else:
+            return self.__sort(self.points, 0, len(self.points) - 1, 0)
 
     def shouldReplace(self, target, currBest, potential):
         '''
@@ -215,7 +238,7 @@ class KDTree(BinarySearchTree):
 
         potentialDistance = self.euclideanDistance(target, potential)
         currentDistance = self.euclideanDistance(target, currBest)
-        return potentialDistance <= currentDistance
+        return potentialDistance < currentDistance
 
     def euclideanDistance(self, first, second):
         distance = 0
@@ -223,7 +246,12 @@ class KDTree(BinarySearchTree):
             distance += pow(data - second.getData()[index], 2)
         return pow(distance, 1/2)
     
-    def findNearestNeighbor(self):
+    def splitPlaneDistance(self, target, current, currBest):
+        euclideanDistance = self.euclideanDistance(target,currBest)
+        dimension = current.getDimDis()
+        return euclideanDistance >= abs(target.getData()[dimension] - current.getData()[dimension])
+    
+    def findNearestNeighbor(self, target):
         '''
         The findNearestNeighbor() search is done in two steps: a 
         search to find the smallest hyperrectangle that contains 
@@ -252,11 +280,87 @@ class KDTree(BinarySearchTree):
         radius, then there cannot possibly be a better nearest neighbor in the subtree, 
         so the subtree can be skipped entirely.
         You can assume that findNearestNeighbor will only be called on a valid kd-tree.
+        We use the __findNearNeighbor() helper function here.
+        INPUT:
+            target = The data point we are trying to find a match for
+        OUTPUT:
+            Node closet to the target point
+        
+        Runtime - O(lg(n)) - Since we are splitting the tree and HOPEFULLY 
+        reecursing only one side of the tree, we are bounded by the height of 
+        the tree which is ~ lg(n) ~ if we are creating a semi-balanced tree. However,
+        there are many variables that go into the theoretical runtime. Because of that,
+        we can get a runtime as bad as O(n) which is no better than running through all 
+        of the points and finding a minimum that way. Average runtime is far better than
+        O(n) however, and because of that it makes this algorithm very valuable once you are
+        searching for a nearest neighbor in data bases that contain billions of data points.
         '''
-        pass
 
-from random import randint
-kdtree = KDTree(2)
-lstData = [(3, 2), (4, 4), (5, 8), (6, 1), (9, 0), (1, 1), (2, 2), (8, 7)]
-kdtree.insertList(lstData)
-print(kdtree)
+        query = KDTreeNode(target, 0)
+        return self.__findNearestNeighbor(0, query, self.root, self.root)
+
+    def __findNearestNeighbor(self, dim, target, currBest, current):
+        '''
+        The first step is to check if we are a leaf node. If so, return the node.
+        We can traverse through the tree and find the leaf node we want
+        NOTE: If the child doesn't exist, we leave it be and do not recur
+        Here we check if the current node is better than the childrens nodes we visited
+        above. If so, we change the currentbest to current.
+        Finally we check whether we need to visit the subtrees that are opposite
+        We determine whether we visit based on the distance of the parent node's
+        distance to the planes splitting dimensions line. I will link a demonstration
+        to lessen the confusion. If we are less than the euclidean distance, then we
+        have to visit the side of the tree that we did not recur on.
+        INPUT:
+            dim = Dimension we are currently splitting on
+            target = The query point we are attempting to find a nearest neighbor for
+            currBest = Used to store the current best (closest) node
+            current = The current node we are recurring on
+        OUTPUT:
+            Node closet to the target point
+        '''
+        
+        if not current.getLeft() and not current.getRight():
+            if self.shouldReplace(target,currBest,current):
+                return current
+            else:
+                return currBest
+        finalValue = currBest
+        visitedLeft = False # variable that tells us which child we visit
+        if self.smallerDimValue(current, target, dim) and current.getRight():
+            finalValue = self.__findNearestNeighbor((dim + 1) % self.dimensions, target, current, current.getRight())
+        if self.smallerDimValue(target, current, dim) and current.getLeft():
+            visitedLeft = True
+            finalValue = self.__findNearestNeighbor((dim + 1) % self.dimensions,target, current, current.getLeft())
+        if self.shouldReplace(target, finalValue, current):
+            finalValue = current
+        if self.splitPlaneDistance(target, current, finalValue):
+            if visitedLeft and current.getRight():
+                oppositetree = self.__findNearestNeighbor((dim + 1) % self.dimensions, target, finalValue, current.getRight())
+                if self.shouldReplace(target, finalValue, oppositetree):
+                    finalValue = oppositetree
+            if not visitedLeft and current.getLeft():
+                oppositetree = self.__findNearestNeighbor((dim + 1) % self.dimensions, target, finalValue, current.getLeft())
+                if self.shouldReplace(target, finalValue, oppositetree):
+                    finalValue = oppositetree
+        return finalValue
+    
+    def linearTestNN(self, target):
+        node = KDTreeNode(target, 0)
+        minimum = self.points[0]
+        for data in self.points:
+            if self.euclideanDistance(node, minimum) > self.euclideanDistance(node, data):
+                minimum = data
+        return minimum
+    
+    def verifyNearest(self, target):
+        linear = self.linearTestNN(target)
+        lgn = self.findNearestNeighbor(target)
+        node = KDTreeNode(target, 0)
+        print(node)
+        print(lgn)
+        print(linear)
+        return self.euclideanDistance(linear, node) == self.euclideanDistance(lgn, node)
+
+    def __len__(self):
+        return len(self.points)
