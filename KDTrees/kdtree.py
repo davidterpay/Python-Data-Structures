@@ -222,6 +222,19 @@ class KDTree(BinarySearchTree):
         return low
 
     def quickselect(self, lst = None):
+        '''
+        Quickselect is a selection algorithm to find the 
+        k-th smallest element in an unordered list. We use quickselect to
+        sort and order our multidimensional data.
+        For an understanding of how quickselect works, check out these websites
+        https://www.geeksforgeeks.org/quickselect-algorithm/
+        https://en.wikipedia.org/wiki/Quickselect
+        INPUT:
+            lst = lst to be sorted
+        OUTPUT:
+            Sorted list of k - dimensional data
+        '''
+
         if lst:
             data = [KDTreeNode(value, 0) for value in lst]
             return self.__sort(data, 0, len(data) - 1, 0)
@@ -233,7 +246,13 @@ class KDTree(BinarySearchTree):
         Determines if a Point is closer to the target Point than another 
         reference Point. Takes three points: target, currentBest, and potential, 
         and returns whether or not potential is closer to target than currentBest.
-        We are using Euclidean distance to compare k-dimensional points
+        We are using Euclidean distance to compare k-dimensional points.
+        INPUT:
+            target = Query point
+            currBest = Current best point
+            potential = The potential new closest point
+        OUTPUT:
+            True if new point is closer, false if it is not
         '''
 
         potentialDistance = self.euclideanDistance(target, potential)
@@ -241,12 +260,39 @@ class KDTree(BinarySearchTree):
         return potentialDistance < currentDistance
 
     def euclideanDistance(self, first, second):
+        '''
+        This function will give us the euclidean distance between
+        two points
+        INPUT:
+            first = first point
+            second = second point
+        OUTPUT:
+            euclidean distance between the two points
+        '''
+
         distance = 0
         for index, data in enumerate(first.getData()):
             distance += pow(data - second.getData()[index], 2)
         return pow(distance, 1/2)
     
     def splitPlaneDistance(self, target, current, currBest):
+        '''
+        This is a helper function to find nearest neighbor that 
+        checks the current points distance from the spliting dimensions plane
+        and returns true if it is smaller than the current radius of 
+        the circle within which our point can exist. This function allows us to make
+        sure we do not traverse through subtreees that could not possibly contain the 
+        nearest neighbor hence dramatically increasing the average runtime of our 
+        algorithm.
+        INPUT:
+            target = Query point
+            current = Current (or parent node) which we are checking
+            currBest = The current best node which will give us the radius we need
+        OUTPUT:
+            True if current points distance from the splitting plane is less
+            than the current radius; false otherwise
+        
+        '''
         euclideanDistance = self.euclideanDistance(target,currBest)
         dimension = current.getDimDis()
         return euclideanDistance >= abs(target.getData()[dimension] - current.getData()[dimension])
@@ -319,7 +365,7 @@ class KDTree(BinarySearchTree):
         OUTPUT:
             Node closet to the target point
         '''
-        
+
         if not current.getLeft() and not current.getRight():
             if self.shouldReplace(target,currBest,current):
                 return current
@@ -346,6 +392,21 @@ class KDTree(BinarySearchTree):
         return finalValue
     
     def linearTestNN(self, target):
+        '''
+        This function will allow us to compare the runtimes between running a find
+        nearest neighbor search and linealy searching through our list to find 
+        the minimum distance neighbor.
+        INPUT:
+            target = Query point
+        OUTPUT:
+            Node that is closest to the target
+        
+        Runtime - O(n) - This runs in O(n) because we have to check every single 
+        element in our array (using this algorithm). An algorithm such as findnearestneighbor
+        cuts down subtrees that cannot possibly contain a closer point so its runtime 
+        is much faster on a average case.
+        '''
+
         node = KDTreeNode(target, 0)
         minimum = self.points[0]
         for data in self.points:
@@ -354,6 +415,17 @@ class KDTree(BinarySearchTree):
         return minimum
     
     def verifyNearest(self, target):
+        '''
+        This is a testing function I created to make sure that 
+        both linear and findNearestNeighbor return nodes that are the same distance away from
+        the target point. I had to implement this because we might not get the same point 
+        but the distances should be the exact same.
+        INPUT:
+            target = Query point
+        OUTPUT:
+            True if the two algorithms result's are same distance apart from the target.
+        '''
+
         linear = self.linearTestNN(target)
         lgn = self.findNearestNeighbor(target)
         node = KDTreeNode(target, 0)
@@ -363,4 +435,8 @@ class KDTree(BinarySearchTree):
         return self.euclideanDistance(linear, node) == self.euclideanDistance(lgn, node)
 
     def __len__(self):
+        '''
+        This returns the length of our kdtree. Allows for len() functionality.
+        '''
+
         return len(self.points)
