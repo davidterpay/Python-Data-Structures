@@ -187,6 +187,20 @@ class KDTree(BinarySearchTree):
         return root
 
     def __sort(self, lst, left, right, dim):
+        '''
+        This helper function will sort the array using the 
+        quickselect algorithm. We recursively sort the left and
+        right sides of the array to give us a faster runtime than
+        soemthing like bubblesort.
+        INPUT:
+            lst: List of data
+            left: Left index we are sorting
+            right: Right index we are sorting
+            dim: Dimension we are sorting at
+        OUTPUT:
+            Sorted list of points in k-dimensions
+        '''
+        
         if left < right:
             median = (left + right + 1) // 2
             # We need pivot to correctly put median in the middle
@@ -198,6 +212,19 @@ class KDTree(BinarySearchTree):
             return lst
 
     def pivot(self, lst, left, right, median, dim):
+        '''
+        This function will allow us to put the median in the correct 
+        location in our array.
+        INPUT:
+            lst: List of data
+            left: Left position of what we are traversing
+            right: Right position of what we are traversing
+            median: The median we are trying to put in correct place
+            dim: Dimension we are sorting at
+        OUTPUT:
+            The median of the array will be correct.
+        '''
+
         # We check if the partition is greater than or equal to median. If
         # so then we have to recur on the proper side.
         pivot = self.partition(left, right, lst, dim)
@@ -208,6 +235,28 @@ class KDTree(BinarySearchTree):
                 self.pivot(lst, left, pivot - 1, median,  dim)
         
     def partition(self, left, right, lst, dim):
+        '''
+        Partition is a helper function to quicksort that 
+        checks the the final position in the array and finds all
+        of the elements that are smaller to put them to the left. 
+        Finally at the end, we swap the place of the final position
+        or the very right element and put it in right after all of 
+        the smallest elements. This means that all of the elements
+        that are smaller than the right most element will be to the 
+        left and all the larger elements will be to the right. This gives
+        us a partially sorted array where the k-th position is
+        in the correct place
+        INPUT:
+            left: The left position of the array we are partitioning
+            right: The right position of the array we are partitioning
+            lst: List of data
+            dim: Dimension we are looking at
+        OUTPUT:
+            Partially sorted data where k-th element is in the correct place.
+        
+        Runtime - O(n) - Since we traverse the entire array, our runtime is O(n).
+        '''
+
         low = left - 1
         for x in range(left, right):
             if self.smallerDimValue(lst[x], lst[right], dim):
@@ -233,6 +282,11 @@ class KDTree(BinarySearchTree):
             lst = lst to be sorted
         OUTPUT:
             Sorted list of k - dimensional data
+        
+        Runtime - O(nlg(n)) - Since the quickselect algorithm is very similar to 
+        quicksort, and since we divide our problem in half every single time we
+        try to find the median value to place in sorted order, our algorithm runs in time
+        proportional to nlg(n). However, the runtime can be as poor as O(n^2).
         '''
 
         if lst:
