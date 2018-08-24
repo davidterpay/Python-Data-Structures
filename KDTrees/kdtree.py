@@ -6,13 +6,19 @@ from functools import reduce
 
 '''
 Written by David Terpay
+A k-d tree is a generalization of a Binary Search Tree that supports 
+nearest neighbor search in higher numbers of dimensions — for example, 
+with 2-D or 3-D points, instead of only 1-D keys. A 1-D-tree (a k-d tree 
+with k=1) is simply a binary search tree.
+
 This is a KDTree class I wrote that includes some of the most important
-functionality in CS as a whole. When I say that I am referencing range based
-queries and finding nearest neighbors to a data point. I inherited the binary search
-tree class I previously created since a KDTree is a type of BST. This allows for nearly
-all of the functionality found the super class (including traversals, depth, breadth first
-searches, etc.). Since KDTrees are harder than most data structures, I will link the extremely
-helpful websites I found when I was building this class.
+functionality in CS as a whole. When I say that I am referencing range 
+based queries and finding nearest neighbors to a data point. I 
+inherited the binary search tree class I previously created 
+since a KDTree is a type of BST. This allows for nearly all of the 
+functionality found the super class (including traversals, depth, breadth first
+searches, etc.). Since KDTrees are harder than most data structures, I will 
+link the extremely helpful websites I found when I was building this class.
 
 https://courses.engr.illinois.edu/cs225/sp2018/mps/5/
 https://en.wikipedia.org/wiki/K-d_tree
@@ -46,6 +52,23 @@ class KDTree(BinarySearchTree):
         self.dimensions = dimensions
 
     def insert(self, data):
+         '''
+        When we are inserting in a kdtree, we compare the values
+        at a certain dimension and move left if the new data is smaller
+        and right otherwise. Once we hit a node that does not have a right child
+        or left child (depending on our data point value's) we insert there.
+        INPUT:
+            data: Data to be inserted.
+        OUTPUT:
+            A new node in our KDTree.
+
+        Runtimee - O(h) - Our runtime is bounded by the height of our tree.
+        if our tree is created by using the helper function createBalancedTree()
+        then our runtime is going to be bounded by O(lg(n)) because our tree will be
+        fairly balanced. However, without using this helpuer function our runtime can be
+        as bad O(n) when our KDTree has a bery linked list like structure.
+        '''
+
         if self.root:
             node = KDTreeNode(data, len(data))
             self.__insert(node, self.root, 0)
@@ -54,6 +77,16 @@ class KDTree(BinarySearchTree):
             self.points.append(self.root)
         
     def __insert(self, newNode, node, dim):
+        '''
+        This is a helper function to insert.
+        INPUT:
+            newNode: New node to be inserted
+            node: Current node we are recursing on
+            dim: Dimension we are looking at
+        OUTPUT:
+            A new node in our KDTree.
+        '''
+
         if self.smallerDimValue(newNode, node, dim):
             if node.getLeft():
                 self.__insert(newNode, node.getLeft(), (dim + 1) % self.dimensions)
@@ -72,21 +105,69 @@ class KDTree(BinarySearchTree):
                 self.points.append(newNode)
 
     def insertList(self, lst):
+        '''
+        This is a wrapper function that allows us to insert a list of nodes
+        into our kdtree
+        INPUT:
+            lst: List of data we want to insert
+        OUTPUT:
+            KDTree we more nodes
+        '''
+
         for data in lst:
             self.insert(data)
 
-    def smallerDimValue(self, newNode, node, dim):
+    def smallerDimValue(self, a, b, d):
         '''
         Determines if Point a is smaller than Point b in a given dimension d.
+        INPUT:
+            a: Point a
+            b: Point B
+            d: Dimesion d
+        OUTPUT:
+            True if a is smaller than b in a given dimension d. Else false
         '''
         
-        return node.getData()[dim] >= newNode.getData()[dim]
+        return a.getData()[d] <= b.getData()[d]
 
     def remove(self, data):
+        '''
+        As stated by geeks for geeks
+        1) If current node contains the point to be deleted
+            If node to be deleted is a leaf node, simply delete it 
+            (Same as BST Delete)
+            If node to be deleted has right child as not NULL 
+            (Different from BST)
+                Find minimum of current node’s dimension in right subtree.
+                Replace the node with above found minimum and 
+                recursively delete minimum in right subtree.
+            Else If node to be deleted has left child 
+                as not NULL (Different from BST)
+                Find minimum of current node’s dimension in left subtree.
+                Replace the node with above found minimum and 
+                recursively delete minimum in left subtree.
+                Make new left subtree as right child of current node.
+        2) If current doesn’t contain the point to be deleted
+            If node to be deleted is smaller than current node on current dimension, 
+            recur for left subtree.
+            Else recur for right subtree.
+        INPUT:
+            data: Data to be removed
+            node: Current we are looking at
+            dim: Dimension
+        OUTPUT:
+            Removed node
+        '''
+
         if self.root:
             self.__remove(data, self.root, 0)
         
     def __remove(self, data, node, dim):
+        '''
+        This is a helper function to remove. Read remove
+        for more documentation on how to remove.
+        '''
+
         if not node:
             return None
         if node.getData() == data:
@@ -120,6 +201,20 @@ class KDTree(BinarySearchTree):
         return node
     
     def findMin(self, node, cd = 0, dim = 0):
+        '''
+        This is a helper function to remove that finds the smallest node
+        value for a given dimension. It returns that node so that we can properly
+        remove a tree node from our KDTree. 
+        First we check if our dimension is equal to the dimension we need.
+            if so then we check if there is a left child and recurse that way
+            otherwise we return the node
+        Second if our dimension is not equal, we have to return the minimum of the right, left
+            and current node.
+
+        Runtime - O(h) - Our runtime is really bounded by our height so we have to be
+        careful how we build our tree (aka use createaBalancedTree).
+        '''
+
         if not node:
             return None
         elif cd == dim:
@@ -132,12 +227,60 @@ class KDTree(BinarySearchTree):
             return self.minimum(dim, node, self.findMin(node.getLeft(), cd, dim), self.findMin(node.getRight(), cd, dim))
 
     def minimum(self, dimension, *args):
-        return reduce(lambda x,y: x if x.getData()[dimension] <= y.getData()[dimension] else y, [node for node in args if node])
+        '''
+        This function is a helper function to remove that takes a list 
+        of nodes and returns the node containing the smallest value 
+        in a certain dimension.
+        INPUT:
+            dimension: Dimension we are looking at
+            args: List of data
+        OUTPUT:
+            Node with the smallest value in a certain dimension.
+        
+        Runtime - O(n) - We have to traverse the entire list
+        '''
+
+        return reduce(lambda x,y: x if self.smallerDimValue(x,y,dimension) else y, [node for node in args if node])
 
     def find(self, data):
+        '''
+        At each level, we compare
+        the data value's in that dimension vs. the node value's in that
+        dimension and recurse accordingly.
+        INPUT:
+            data: Data we are trying to find
+        OUTPUT:
+            The node if it exists in the tree, otherwise none.
+        
+        Runtime - O(lg(n)) - If our tree is created using the createBalancedTree()
+        function, then our search is more or less bounded by the height of our tree.
+        However, if we randomly insert, we could end up getting a long linked list.
+        In this case, runtime is more along the lines of O(n). However, average runtime
+        is far better than that so we say a O(lg(n)) is appropriate.
+        '''
+
         return self.__find(data, self.root, 0)
     
     def __find(self, data, node, dim):
+        '''
+        This is a helper function that helps us recurse through our
+        k-dimensional tree to find our data. At each level, we compare
+        the data value's in that dimension vs. the node value's in that
+        dimension and recurse accordingly.
+        INPUT:
+            data: Data we are trying to find
+            node: Current node we are recursing on
+            dim: Dimension discriminator
+        OUTPUT:
+            The node if it exists in the tree, otherwise none.
+        
+        Runtime - O(lg(n)) - If our tree is created using the createBalancedTree()
+        function, then our search is more or less bounded by the height of our tree.
+        However, if we randomly insert, we could end up getting a long linked list.
+        In this case, runtime is more along the lines of O(n). However, average runtime
+        is far better than that so we say a O(lg(n)) is appropriate.
+        '''
+
         if not node:
             return None
         if node.getData() == data:
@@ -160,7 +303,12 @@ class KDTree(BinarySearchTree):
         levels of the tree split on increasing dimensions, modulo the 
         total number: a 3D tree will have levels split by dimension 0, 
         1, 2, 0, 1, 2, etc.
+        INPUT:
+            lst: List of data
+        OUTPUT:
+            List of data in sorted order
         '''
+
         if lst:
             data = self.quickselect(lst)
             self.root = self.__buildTree(0, len(data) - 1, data, 0)
@@ -171,6 +319,23 @@ class KDTree(BinarySearchTree):
         return list(map(KDTreeNode.getData, self.points))
 
     def __buildTree(self, left, right, lst, dim):
+        '''
+        Create a subroot based on the median of our points list and 
+        then recurse on the indices between a though m−1 for its left subtree, 
+        and m+1 through b  for its right subtree, using splitting 
+        dimension (d+1) mod k.
+        INPUT:
+            left: Left most index we are splitting on
+            right: Right most index we are splitting on
+            lst: Lst of points
+            dim: Dimension
+        OUTPUT:
+            Root of the new tree
+        
+        Runtime - O(n) - Since we have to recurse for every element in our list
+        our runtime is bounded by the amount of data we have in it.
+        '''
+
         if left > right:
             return
         median = (left + right + 1) // 2
@@ -200,7 +365,7 @@ class KDTree(BinarySearchTree):
         OUTPUT:
             Sorted list of points in k-dimensions
         '''
-        
+
         if left < right:
             median = (left + right + 1) // 2
             # We need pivot to correctly put median in the middle
@@ -483,9 +648,6 @@ class KDTree(BinarySearchTree):
         linear = self.linearTestNN(target)
         lgn = self.findNearestNeighbor(target)
         node = KDTreeNode(target, 0)
-        print(node)
-        print(lgn)
-        print(linear)
         return self.euclideanDistance(linear, node) == self.euclideanDistance(lgn, node)
 
     def __len__(self):
