@@ -7,7 +7,9 @@ Heaps
 
 AVL Trees
 
-KDTrees -- K Dimensional Trees (in progress)
+KDTrees -- K Dimensional Trees
+
+BTrees (in progress)
 
 Binary Trees
 
