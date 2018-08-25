@@ -1,6 +1,7 @@
 import sys
 sys.path.append('../')
 from Binary_Tree.binarytree import BinarySearchTree
+from Binary_Tree.treenode import TreeNode
 from kdtreenode import KDTreeNode
 from functools import reduce
 
@@ -52,7 +53,7 @@ class KDTree(BinarySearchTree):
         self.dimensions = dimensions
 
     def insert(self, data):
-         '''
+        '''
         When we are inserting in a kdtree, we compare the values
         at a certain dimension and move left if the new data is smaller
         and right otherwise. Once we hit a node that does not have a right child
@@ -317,6 +318,86 @@ class KDTree(BinarySearchTree):
             self.points = self.quickselect()
             self.root = self.__buildTree(0, len(self.points) - 1, self.points, 0)
         return list(map(KDTreeNode.getData, self.points))
+
+    def createLeafTree(self, lst = None):
+        '''
+        This is a function that will create a tree in which all
+        of our data is stored in the leaf nodes. We will do so
+        by first sorting our list of points, and then creating
+        TreeNodes with only the splitting value within the node.
+        When we reach the leaf nodes, we simply will add the kdtree
+        nodes where ever necessary. MAKE SURE THE POINTS ARE
+        SORTED BEFORE CALLING THIS OR ELSE THE FUNCTION WILL NOT WORK
+        INPUT: None
+        OUTPUT:
+            Leaf Tree
+        '''
+
+        self.points = self.quickselect()
+        self.root = self.__medianSplit(0, len(self) - 1, 0)
+        self.__medianInsert(0, len(self) - 1)
+        return self.root
+    
+    def __medianInsert(self, left, right):
+        if left <= right:
+            median = (left + right + 1) // 2
+            medianDataPoint = self.points[median]
+            medianDataPoint.setRight(None)
+            medianDataPoint.setLeft(None)
+            medianDataPoint.setRight(None)
+            self.__leafifyData(self.root, medianDataPoint, 0)
+            self.__medianInsert(left, median - 1)
+            self.__medianInsert(median + 1, right)
+
+    def __leafifyData(self, node, data, dim):
+        print(self)
+        print(data.getData()[dim])
+        if node.getData() >= data.getData()[dim]:
+            if node.getLeft():
+                if not self.__positionTaken(node.getLeft(), data, (dim + 1) % self.dimensions):
+                    self.__leafifyData(node.getLeft(), data, (dim + 1) % self.dimensions)
+                else:
+                    node.setRight(data)
+                    data.setParent(node)
+            else:
+                node.setLeft(data)
+                data.setParent(node)
+        else:
+            if node.getRight():
+                self.__leafifyData(node.getRight(), data, (dim + 1) % self.dimensions)
+            else:
+                node.setRight(data)
+                data.setParent(node)
+
+    def __positionTaken(self, node, data, dim):
+        if type(node) == type(data):
+            return True
+        if type(node.getRight()) == type(node.getLeft()):
+            return True
+        if node.getData() > data.getData()[dim]:
+            if node.getRight():
+                if type(node.getRight()) == type(data):
+                    return True
+                else:
+                    return self.__positionTaken(node.getRight(), data, (dim + 1) % self.dimensions)
+            else:
+                return False
+        return True
+    def __medianSplit(self, left, right, dim):
+        if left > right:
+            return
+        median = (left + right + 1) // 2
+        data = self.points[median].getData()[dim]
+        root = TreeNode(data)
+        left = self.__medianSplit(left, median - 1, (dim + 1) % self.dimensions)
+        if left:
+            left.setParent(root)
+        right = self.__medianSplit(median + 1, right, (dim + 1) % self.dimensions)
+        if right:
+            left.setParent(root)
+        root.setRight(right)
+        root.setLeft(left)
+        return root
 
     def __buildTree(self, left, right, lst, dim):
         '''
@@ -656,3 +737,14 @@ class KDTree(BinarySearchTree):
         '''
 
         return len(self.points)
+
+from random import randint
+kdtree = KDTree(2)
+def createPoint(dim):
+    return [randint(-100,100) for x in range(dim)]
+# lstData = [(3, 2),	(5, 8),	(6, 1),	(4, 4),	(9, 0),	(1, 1),	(2, 2),	(8, 7)]
+lstData = [createPoint(2) for x in range(10)]
+kdtree.createBalancedTree(lstData)
+print([data.getData() for data in kdtree.points])
+kdtree.createLeafTree()
+print(kdtree)
