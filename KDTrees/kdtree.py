@@ -335,55 +335,79 @@ class KDTree(BinarySearchTree):
 
         self.points = self.quickselect()
         self.root = self.__medianSplit(0, len(self) - 1, 0)
-        self.__medianInsert(0, len(self) - 1)
+        self.__medianInsert(self.root, 0, len(self) - 1)
         return self.root
     
-    def __medianInsert(self, left, right):
+    def __medianInsert(self, node, left, right):
+        '''
+        This is a helper function to insert the actual KDTree nodes
+        into our KDTree. It splits the points array and recursively inserts 
+        each node where the in order predecessor would be placed. This
+        effectively allows us to place our node in the correct location.
+        INPUT:
+            node: Current node we are recursing on. This variable helps keep
+                track of where the data should be placed. So in short, we 
+                have node and all we have to do is find this nodes IOP and
+                insert there.
+            left: Left index we are recursing on
+            right: Right index we are recursing on
+        OUTPUT:
+            KDTree with all of its leaf nodes containing the actual data.
+            All internal nodes are treeNodes while leaf nodes are specifically
+            KDTreeNodes (Since they hold data of multiple dimensions).
+        
+        Runtime - O(nlg(n)) - Since there are n elements and since it takes
+        approximately O(h) time to insert each node, our total runtime is 
+        O(nlg(n)).
+        '''
+
         if left <= right:
             median = (left + right + 1) // 2
             medianDataPoint = self.points[median]
             medianDataPoint.setRight(None)
             medianDataPoint.setLeft(None)
             medianDataPoint.setRight(None)
-            self.__leafifyData(self.root, medianDataPoint, 0)
-            self.__medianInsert(left, median - 1)
-            self.__medianInsert(median + 1, right)
+            self.__insertInorderPredecessor(node, medianDataPoint)
+            self.__medianInsert(node.getLeft(), left, median - 1)
+            self.__medianInsert(node.getRight(), median + 1, right)
 
-    def __leafifyData(self, node, data, dim):
-        print(self)
-        print(data.getData()[dim])
-        if node.getData() >= data.getData()[dim]:
-            if node.getLeft():
-                if not self.__positionTaken(node.getLeft(), data, (dim + 1) % self.dimensions):
-                    self.__leafifyData(node.getLeft(), data, (dim + 1) % self.dimensions)
-                else:
-                    node.setRight(data)
-                    data.setParent(node)
-            else:
-                node.setLeft(data)
-                data.setParent(node)
+    def __insertInorderPredecessor(self, node, data):
+        '''
+        This function will correctly insert our data into the variable 
+        node's IOP
+        INPUT:
+            node: Node we are looking to find IOP of
+            data: Data to be inserted
+        OUTPUT:
+            New node in KDTree.
+        '''
+
+        if node.getLeft():
+            positionInsert = node.getLeft()
+            while positionInsert.getRight():
+                positionInsert = positionInsert.getRight()
+            positionInsert.setRight(data)
+            data.setParent(positionInsert)
         else:
-            if node.getRight():
-                self.__leafifyData(node.getRight(), data, (dim + 1) % self.dimensions)
-            else:
-                node.setRight(data)
-                data.setParent(node)
+            node.setLeft(data)
+            data.setParent(node)
 
-    def __positionTaken(self, node, data, dim):
-        if type(node) == type(data):
-            return True
-        if type(node.getRight()) == type(node.getLeft()):
-            return True
-        if node.getData() > data.getData()[dim]:
-            if node.getRight():
-                if type(node.getRight()) == type(data):
-                    return True
-                else:
-                    return self.__positionTaken(node.getRight(), data, (dim + 1) % self.dimensions)
-            else:
-                return False
-        return True
     def __medianSplit(self, left, right, dim):
+        '''
+        This function will build us a KDTree filled with TreeNodes
+        (NOTE: these are not KDTreeNodes because they only carry 1-d data).
+        It will build us all of our splitting points at each dimensions so that
+        when we insert our actual data we will simply find the IOP of the node
+        and insert the data there.
+        INPUT:
+            left: Left index we are recursing on
+            right: Right index we are recursing on
+            dim: Dimension we are looking at
+        OUTPUT:
+            KDTree with treenodes containing 1-d data that helps us create a tree
+            where we can insert all data at the leaf nodes.
+        '''
+
         if left > right:
             return
         median = (left + right + 1) // 2
@@ -739,12 +763,13 @@ class KDTree(BinarySearchTree):
         return len(self.points)
 
 from random import randint
-kdtree = KDTree(2)
+kdtree = KDTree(5)
 def createPoint(dim):
     return [randint(-100,100) for x in range(dim)]
+
+
 # lstData = [(3, 2),	(5, 8),	(6, 1),	(4, 4),	(9, 0),	(1, 1),	(2, 2),	(8, 7)]
-lstData = [createPoint(2) for x in range(10)]
+lstData = [createPoint(5) for x in range(51)]
 kdtree.createBalancedTree(lstData)
-print([data.getData() for data in kdtree.points])
 kdtree.createLeafTree()
 print(kdtree)
