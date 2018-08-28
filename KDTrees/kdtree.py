@@ -542,16 +542,15 @@ class KDTree(BinarySearchTree):
     def createLeafTree(self, lst=None):
         '''
         This is a function that will create a tree in which all
-        of our data is stored in the leaf nodes. We will do so
-        by first sorting our list of points, and then creating
-        TreeNodes with only the splitting value within the node.
-        When we reach the leaf nodes, we simply will add the kdtree
-        nodes where ever necessary. MAKE SURE THE POINTS ARE
-        SORTED BEFORE CALLING THIS OR ELSE THE FUNCTION WILL NOT WORK
-        INPUT: None
+        of our data is stored in the leaf nodes. We will create the tree by quickselecting
+        the median and creating the node as we move along the list of data. The
+        tree will be relatively balanced.
+        INPUT:
+            lst: List of data
         OUTPUT:
             Leaf Tree
         '''
+
         if lst:
             self.points = [KDTreeNode(data, 0) for data in lst]
         self.root = self.__medianInsert(self.points, 0)
@@ -564,12 +563,12 @@ class KDTree(BinarySearchTree):
         each node where the in order predecessor would be placed. This
         effectively allows us to place our node in the correct location.
         INPUT:
-            node: Current node we are recursing on. This variable helps keep
-                track of where the data should be placed. So in short, we 
-                have node and all we have to do is find this nodes IOP and
-                insert there.
-            left: Left index we are recursing on
-            right: Right index we are recursing on
+            lst: Current lst we are recursing on. In short, we take the list,
+            place the median in the correct position, and then recurse on
+            left and right side of the list. if the lists length is 0, then we
+            simply return that element. Otherwise, what we have is a internal 
+            node and we have to insert
+            dim: Dimension
         OUTPUT:
             KDTree with all of its leaf nodes containing the actual data.
             All internal nodes are treeNodes while leaf nodes are specifically
@@ -579,6 +578,7 @@ class KDTree(BinarySearchTree):
         approximately O(h) time to insert each node, our total runtime is 
         O(nlg(n)).
         '''
+
         if len(lst) == 1:
             return lst[0]
         else:
@@ -651,6 +651,7 @@ class KDTree(BinarySearchTree):
             than the current radius; false otherwise
         
         '''
+
         euclideanDistance = self.euclideanDistance(target,currBest)
         dimension = current.getDimDis()
         return euclideanDistance >= abs(target.getData()[dimension] - current.getData()[dimension])
@@ -773,6 +774,13 @@ class KDTree(BinarySearchTree):
         return minimum
     
     def linearTestSearch(self, **kawrgs):
+        '''
+        This is a testing function that will check if our actual
+        range search works. It simply checks every element in the list of points 
+        and appends it to a list if it is in the range and returns
+        the list
+        '''
+
         lst = []
         for data in self.points:
             if self.__inRange(kawrgs, data):
@@ -802,27 +810,3 @@ class KDTree(BinarySearchTree):
         '''
 
         return len(self.points)
-
-from random import randint
-kdtree = KDTree(3)
-def createPoint(dim):
-    return [randint(-150,200) for x in range(dim)]
-
-
-# lstData = [(3, 2),	(5, 8),	(6, 1),	(4, 4),	(9, 0),	(1, 1),	(2, 2),	(8, 7)]
-# lstData = [createPoint(3) for x in range(10)]
-# lstData = [(3,4),(4,7),(6,3),(6,11),(9,2),(10,10),(11,10)]
-# lstData = [[-122, -122, -115], [-93, -73, -89], [-30, 6, 182], [-140, 122, -135], [-76, 67, -64], [-7, -77, 49], [166, -16, 105], [46, 15, 152], [44, 45, -18], [164, 130, 94]]
-lstData = [createPoint(3) for x in range(100000)]
-kdtree.createLeafTree(lstData)
-# print(kdtree)
-rangesearch = kdtree.rangeSearch(x =  [-100, 100], y = [-100, 100], z = [-100, 100])
-linearsearch = kdtree.linearTestSearch(x=[-100, 100], y=[-100, 100], z=[-100, 100])
-if not len(linearsearch) == len(rangesearch):
-    lis = [x.getData() for x in linearsearch if x not in rangesearch]
-    print(kdtree)
-    print('\n\n')
-    print('The difference between the two lists is: ', lis)
-    print('\n\n')
-    print([data.getData() for data in kdtree.points])
-print('Done')
