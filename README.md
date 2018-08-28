@@ -31,4 +31,4 @@ Skip List
 
 Trie (prefix tree)
 
-Huffman Encoding (Maybe in its own folder)
+Huffman Encoding
