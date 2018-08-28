@@ -3,7 +3,7 @@ sys.path.append('../')
 from Binary_Tree.treenode import TreeNode
 class KDTreeNode(TreeNode):
     def __init__(self, data, dim):
-        TreeNode.__init__(self, data)
+        super().__init__(data)
         self.__dimensionDiscriminator = dim
     
     def getDimDis(self):

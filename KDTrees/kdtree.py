@@ -291,6 +291,83 @@ class KDTree(BinarySearchTree):
         else:
             return self.__find(data, node.getLeft(), (dim + 1) % self.dimensions)
 
+    def rangeSearch(self, **kawrgs):
+        '''
+        This function will allow us to insert a dictionary, and find all of the
+        points within that range of inserted numbers (stored in the dictionary).
+        It doesnt matter what name you store each parameter under, but order matters.
+        for ex.
+        If we want to find 2d data then we would do something like this
+            kdtreevariable.rangeSearch(x = [-100,100], y = [-300,150])
+                This would find all 2d data within -100 to 100 in x dimension 
+                and -300 to 150 in y dimension.
+        I will show a example in the jupyter notebook.
+        INPUT:
+            kwargs: Dictionary of all the parameters
+        OUTPUT:
+            List of data points in the range
+        '''
+
+        lst = []
+        self.__rangeSearch(self.root, lst, kawrgs, 0)
+        return lst
+
+    def __rangeSearch(self, node, lst, dictionary, dim):
+        '''
+        This is a helper function to rangeseach. The algorithm that
+        we use here is quite simple. If the current node's data is not
+        a treeNode (or is a leaf and therefore a KDTreeNode), then we 
+        check if the data is within the parameters stored in the dictionary.
+        If we are at a treenode (which is every internal node), then we 3
+        cases:
+            1. the data is within the upper and lower bounds (inclusive) of the
+                dimensions requirements. We recurse on both sides of the tree.
+            2. the lower bound is greater than the data, we recurse on the right side
+            3. recurse on the left side.
+        INPUT:
+            node: Current node we are looking at
+            lst: List of data that contains the points which are within the dimensions
+            dictionary: key and values containing all the lower and upper bounds
+            dim: Dimension
+        OUTPUT:
+            List of data within the range
+        '''
+
+        if not node:
+            return
+        if type(node) != type(self.root):
+            if self.__inRange(dictionary, node):
+                lst.append(node)
+            return
+        key = list(dictionary.keys())[dim]
+        if  dictionary[key][0] <= node.getData() <= dictionary[key][1]:
+            self.__rangeSearch(node.getRight(), lst, dictionary, (dim + 1) % self.dimensions)
+            self.__rangeSearch(node.getLeft(), lst, dictionary, (dim + 1) % self.dimensions)
+        elif dictionary[key][0] > node.getData():
+            self.__rangeSearch(node.getRight(), lst, dictionary, (dim + 1) % self.dimensions)
+        else:
+            self.__rangeSearch(node.getLeft(), lst, dictionary, (dim + 1) % self.dimensions)
+
+    def __inRange(self, dictionary, node):
+        '''
+        This is a helper function that determines if every single
+        dimension in a node is within the parameters given by the dictionary
+        INPUT:
+            dictionary: Dictionary containing all the parameters
+            node: Node are checking the parameters of
+        OUTPUT:
+            True if every dimension of the node is within the upper and
+            lower bounds.
+        '''
+
+        dimension = 0
+        for __, value in dictionary.items():
+            data = node.getData()[dimension]
+            if not (value[0] <= data <= value[1]):
+                return False
+            dimension += 1
+        return True
+
     def createBalancedTree(self, lst = None):
         '''
         KD-trees are created recursively; at any stage of the 
@@ -318,110 +395,6 @@ class KDTree(BinarySearchTree):
             self.points = self.quickselect()
             self.root = self.__buildTree(0, len(self.points) - 1, self.points, 0)
         return list(map(KDTreeNode.getData, self.points))
-
-    def createLeafTree(self, lst = None):
-        '''
-        This is a function that will create a tree in which all
-        of our data is stored in the leaf nodes. We will do so
-        by first sorting our list of points, and then creating
-        TreeNodes with only the splitting value within the node.
-        When we reach the leaf nodes, we simply will add the kdtree
-        nodes where ever necessary. MAKE SURE THE POINTS ARE
-        SORTED BEFORE CALLING THIS OR ELSE THE FUNCTION WILL NOT WORK
-        INPUT: None
-        OUTPUT:
-            Leaf Tree
-        '''
-
-        self.points = self.quickselect()
-        self.root = self.__medianSplit(0, len(self) - 1, 0)
-        self.__medianInsert(self.root, 0, len(self) - 1)
-        return self.root
-    
-    def __medianInsert(self, node, left, right):
-        '''
-        This is a helper function to insert the actual KDTree nodes
-        into our KDTree. It splits the points array and recursively inserts 
-        each node where the in order predecessor would be placed. This
-        effectively allows us to place our node in the correct location.
-        INPUT:
-            node: Current node we are recursing on. This variable helps keep
-                track of where the data should be placed. So in short, we 
-                have node and all we have to do is find this nodes IOP and
-                insert there.
-            left: Left index we are recursing on
-            right: Right index we are recursing on
-        OUTPUT:
-            KDTree with all of its leaf nodes containing the actual data.
-            All internal nodes are treeNodes while leaf nodes are specifically
-            KDTreeNodes (Since they hold data of multiple dimensions).
-        
-        Runtime - O(nlg(n)) - Since there are n elements and since it takes
-        approximately O(h) time to insert each node, our total runtime is 
-        O(nlg(n)).
-        '''
-
-        if left <= right:
-            median = (left + right + 1) // 2
-            medianDataPoint = self.points[median]
-            medianDataPoint.setRight(None)
-            medianDataPoint.setLeft(None)
-            medianDataPoint.setRight(None)
-            self.__insertInorderPredecessor(node, medianDataPoint)
-            self.__medianInsert(node.getLeft(), left, median - 1)
-            self.__medianInsert(node.getRight(), median + 1, right)
-
-    def __insertInorderPredecessor(self, node, data):
-        '''
-        This function will correctly insert our data into the variable 
-        node's IOP
-        INPUT:
-            node: Node we are looking to find IOP of
-            data: Data to be inserted
-        OUTPUT:
-            New node in KDTree.
-        '''
-
-        if node.getLeft():
-            positionInsert = node.getLeft()
-            while positionInsert.getRight():
-                positionInsert = positionInsert.getRight()
-            positionInsert.setRight(data)
-            data.setParent(positionInsert)
-        else:
-            node.setLeft(data)
-            data.setParent(node)
-
-    def __medianSplit(self, left, right, dim):
-        '''
-        This function will build us a KDTree filled with TreeNodes
-        (NOTE: these are not KDTreeNodes because they only carry 1-d data).
-        It will build us all of our splitting points at each dimensions so that
-        when we insert our actual data we will simply find the IOP of the node
-        and insert the data there.
-        INPUT:
-            left: Left index we are recursing on
-            right: Right index we are recursing on
-            dim: Dimension we are looking at
-        OUTPUT:
-            KDTree with treenodes containing 1-d data that helps us create a tree
-            where we can insert all data at the leaf nodes.
-        '''
-
-        if left > right:
-            return
-        median = (left + right + 1) // 2
-        data = self.points[median].getData()[dim]
-        root = TreeNode(data)
-        left = self.__medianSplit(left, median - 1, (dim + 1) % self.dimensions)
-        if left:
-            left.setParent(root)
-        right = self.__medianSplit(median + 1, right, (dim + 1) % self.dimensions)
-        if right:
-            left.setParent(root)
-        root.setRight(right)
-        root.setLeft(left)
-        return root
 
     def __buildTree(self, left, right, lst, dim):
         '''
@@ -503,6 +476,7 @@ class KDTree(BinarySearchTree):
                 self.pivot(lst, pivot + 1, right, median, dim)
             elif pivot > median:
                 self.pivot(lst, left, pivot - 1, median,  dim)
+        return lst[median].getData()[dim]
         
     def partition(self, left, right, lst, dim):
         '''
@@ -564,6 +538,66 @@ class KDTree(BinarySearchTree):
             return self.__sort(data, 0, len(data) - 1, 0)
         else:
             return self.__sort(self.points, 0, len(self.points) - 1, 0)
+
+    def createLeafTree(self, lst=None):
+        '''
+        This is a function that will create a tree in which all
+        of our data is stored in the leaf nodes. We will do so
+        by first sorting our list of points, and then creating
+        TreeNodes with only the splitting value within the node.
+        When we reach the leaf nodes, we simply will add the kdtree
+        nodes where ever necessary. MAKE SURE THE POINTS ARE
+        SORTED BEFORE CALLING THIS OR ELSE THE FUNCTION WILL NOT WORK
+        INPUT: None
+        OUTPUT:
+            Leaf Tree
+        '''
+        if lst:
+            self.points = [KDTreeNode(data, 0) for data in lst]
+        self.root = self.__medianInsert(self.points, 0)
+        return self.root
+
+    def __medianInsert(self, lst, dim):
+        '''
+        This is a helper function to insert the actual KDTree nodes
+        into our KDTree. It splits the points array and recursively inserts 
+        each node where the in order predecessor would be placed. This
+        effectively allows us to place our node in the correct location.
+        INPUT:
+            node: Current node we are recursing on. This variable helps keep
+                track of where the data should be placed. So in short, we 
+                have node and all we have to do is find this nodes IOP and
+                insert there.
+            left: Left index we are recursing on
+            right: Right index we are recursing on
+        OUTPUT:
+            KDTree with all of its leaf nodes containing the actual data.
+            All internal nodes are treeNodes while leaf nodes are specifically
+            KDTreeNodes (Since they hold data of multiple dimensions).
+        
+        Runtime - O(nlg(n)) - Since there are n elements and since it takes
+        approximately O(h) time to insert each node, our total runtime is 
+        O(nlg(n)).
+        '''
+        if len(lst) == 1:
+            return lst[0]
+        else:
+            median = (len(lst)) // 2
+            tempData = self.pivot(lst, 0, len(lst) - 1, median, dim)
+            node = TreeNode(tempData, dim)
+            if len(lst) == 2:
+                right = self.__medianInsert(lst[median : len(lst)], (dim + 1) % self.dimensions)
+                left = self.__medianInsert(lst[0 : median], (dim + 1) % self.dimensions)
+            else:
+                right = self.__medianInsert(lst[median + 1: len(lst)], (dim + 1) % self.dimensions)
+                left = self.__medianInsert(lst[0 : median + 1], (dim + 1) % self.dimensions)
+            if right:
+                node.setRight(right)
+                right.setParent(node)
+            if left:
+                node.setLeft(left)
+                left.setParent(node)
+            return node
 
     def shouldReplace(self, target, currBest, potential):
         '''
@@ -738,6 +772,13 @@ class KDTree(BinarySearchTree):
                 minimum = data
         return minimum
     
+    def linearTestSearch(self, **kawrgs):
+        lst = []
+        for data in self.points:
+            if self.__inRange(kawrgs, data):
+                lst.append(data)
+        return lst
+
     def verifyNearest(self, target):
         '''
         This is a testing function I created to make sure that 
@@ -763,13 +804,25 @@ class KDTree(BinarySearchTree):
         return len(self.points)
 
 from random import randint
-kdtree = KDTree(5)
+kdtree = KDTree(3)
 def createPoint(dim):
-    return [randint(-100,100) for x in range(dim)]
+    return [randint(-150,200) for x in range(dim)]
 
 
 # lstData = [(3, 2),	(5, 8),	(6, 1),	(4, 4),	(9, 0),	(1, 1),	(2, 2),	(8, 7)]
-lstData = [createPoint(5) for x in range(51)]
-kdtree.createBalancedTree(lstData)
-kdtree.createLeafTree()
-print(kdtree)
+# lstData = [createPoint(3) for x in range(10)]
+# lstData = [(3,4),(4,7),(6,3),(6,11),(9,2),(10,10),(11,10)]
+# lstData = [[-122, -122, -115], [-93, -73, -89], [-30, 6, 182], [-140, 122, -135], [-76, 67, -64], [-7, -77, 49], [166, -16, 105], [46, 15, 152], [44, 45, -18], [164, 130, 94]]
+lstData = [createPoint(3) for x in range(100000)]
+kdtree.createLeafTree(lstData)
+# print(kdtree)
+rangesearch = kdtree.rangeSearch(x =  [-100, 100], y = [-100, 100], z = [-100, 100])
+linearsearch = kdtree.linearTestSearch(x=[-100, 100], y=[-100, 100], z=[-100, 100])
+if not len(linearsearch) == len(rangesearch):
+    lis = [x.getData() for x in linearsearch if x not in rangesearch]
+    print(kdtree)
+    print('\n\n')
+    print('The difference between the two lists is: ', lis)
+    print('\n\n')
+    print([data.getData() for data in kdtree.points])
+print('Done')
