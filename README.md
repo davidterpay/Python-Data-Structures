@@ -25,10 +25,10 @@ Disjoint Sets
 
 Graphs
 
-Hashing of some sort
+Hashing
 
-Skip List
+Skip Lists
 
-Trie (prefix tree)
+Tries (prefix tree)
 
 Huffman Encoding
