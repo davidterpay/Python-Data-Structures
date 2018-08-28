@@ -1,5 +1,5 @@
 # Python-Data-Structures
-This is an on going project of mine - to code every major data structure in python. I will also add a C++ version sometime in the future.
+This is an on going project of mine - to code every major data structure in python. I will also add a C++ version sometime in the future. Currently at 3,872 lines of code.
 
 ### So far I have :
 
