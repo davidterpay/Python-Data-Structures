@@ -21,8 +21,6 @@ Queues
 
 ### I still want to add :
 
-BTrees
-
 Disjoint Sets
 
 Graphs
