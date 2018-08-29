@@ -16,7 +16,27 @@ class DataPair():
 
         self.key = key
         self.__value = value
-    
+
+    def setKey(self, key):
+        '''
+        Setter to set the key in our DataPair object.
+        '''
+        self.key = key
+
+    def getValue(self):
+        '''
+        Getter to retrieve the value in our DataPair object.
+        '''
+
+        return self.__value
+
+    def setValue(self, value):
+        '''
+        Setter to set the value in our DataPair object.
+        '''
+        
+        self.__value = value
+
     def __lt__(self, other):
         '''
         We are overloading the less than operator to allow for less
@@ -28,7 +48,7 @@ class DataPair():
         '''
 
         return self.key < other.key
-    
+
     def __gt__(self, other):
         '''
         We are overloading the greater than operator to allow for less
@@ -52,26 +72,6 @@ class DataPair():
         '''
 
         return self.key == other.key
-
-    def setKey(self, key):
-        '''
-        Setter to set the key in our DataPair object.
-        '''
-        self.key = key
-
-    def getValue(self):
-        '''
-        Getter to retrieve the value in our DataPair object.
-        '''
-
-        return self.__value
-
-    def setValue(self, value):
-        '''
-        Setter to set the value in our DataPair object.
-        '''
-        
-        self.__value = value
     
     def __str__(self):
         '''
