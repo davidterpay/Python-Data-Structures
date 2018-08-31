@@ -21,6 +21,7 @@ class DataPair():
         '''
         Setter to set the key in our DataPair object.
         '''
+        
         self.key = key
 
     def getValue(self):

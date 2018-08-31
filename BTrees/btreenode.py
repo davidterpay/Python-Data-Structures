@@ -34,9 +34,33 @@ class BTreeNode():
 
         newDataPair = DataPair(key, value)
         if len(self) == 0:
-            self.data.insert(0, newDataPair)
+            self.data.append(newDataPair)
         else:
             self.__insertSorted(0, len(self.data) - 1, newDataPair)
+    
+    def find(self, key):
+        return self.__find(0, len(self) - 1, key)
+    
+    def __find(self, left, right, key):
+        if left >= right:
+            if self.data[left].key == key:
+                return left
+            else:
+                return None
+        else:
+            median = (left + right) // 2
+            if self.data[median].key == key:
+                return median
+            elif self.data[median].key < key:
+                return self.__find(median + 1, len(self) - 1, key)
+            else:
+                return self.__find(left, median - 1, key)
+
+    def insertDataPair(self, datapair):
+        if len(self) == 0:
+            self.data.append(datapair)
+        else: 
+            self.__insertSorted(0, len(self.data) - 1, datapair)
     
     def insertList(self, lst):
         '''
@@ -136,6 +160,39 @@ class BTreeNode():
             else:
                 self.data.insert(median, datapair)
     
+    def binarySearch(self, left, right, datapair):
+        '''
+        This is a helper function to find the index of the child we need to visit
+        '''
+        
+        if left >= right:
+            if datapair < self.data[left] or datapair == self.data[left]:
+                return left
+            else:
+                return left + 1
+        if left < right:
+            median = (left + right) // 2
+            if datapair == self.data[median]:
+                return median
+            elif datapair < self.data[median]:
+                return self.binarySearch(left, median - 1, datapair)
+            else:
+                return self.binarySearch(median + 1, right, datapair)
+    
+    def isLeaf(self):
+        '''
+        Helper function to see if our node is a leaf node aka no children
+        '''
+
+        return len(self.children) == 0
+    
+    def isFull(self):
+        '''
+        Helper function to see if our node is full
+        '''
+
+        return len(self) == self.orderm
+    
     def __str__(self):
         '''
         Overloading str to give us a string representation of our 
@@ -156,4 +213,3 @@ class BTreeNode():
         '''
 
         return len(self.data)
-
