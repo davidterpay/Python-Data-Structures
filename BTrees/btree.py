@@ -1,7 +1,8 @@
-import sys
-sys.path.append('../')
 from btreenode import BTreeNode
 from datapair import DataPair
+import sys
+sys.path.append('../')
+from Queues.Queue import Queue
 '''
 Written by David Terpay
 This is a BTree class that I built. BTrees are a type of tree but are not a 
@@ -47,7 +48,7 @@ class BTree():
         to check if our node is too large in which we then have to split it as given to use
         by the btree properties mentioned in the btree.py file.
         '''
-        
+
         datapair = DataPair(key, value)
         self.__insert(self.root, datapair)
         if self.root.isFull():
@@ -155,3 +156,24 @@ class BTree():
                 return self.__find(node.children[childIndex], key)
             else:
                 return None
+
+    def __str__(self):
+        '''
+        String representation of our BTree
+        '''
+
+        string = ''
+        queue = Queue()
+        queue.enque(self.root)
+        queue.enque(1)
+        while not queue.isEmpty():
+            node = queue.deque()
+            if not node.isLeaf():
+                for child in node.children:
+                    queue.enque(child)
+                queue.enque(1)
+            while node != 1:
+                string += f'Data: {str([pair.key for pair in node.data])}' + '   '
+                node = queue.deque()
+            string += '\n\n'
+        return string
