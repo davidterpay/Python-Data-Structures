@@ -162,7 +162,7 @@ class BTree():
         String representation of our BTree
         '''
 
-        string = ''
+        string = 'Root --> '
         queue = Queue()
         queue.enque(self.root)
         queue.enque(1)
