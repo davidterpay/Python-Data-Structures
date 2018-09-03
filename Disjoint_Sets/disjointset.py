@@ -33,7 +33,75 @@ class DisjointSet():
         We only need to keep track of the array in a disjoint set. Each element 
         can be mapped to an integer.
         '''
+        self.array = []
 
-        self.array = lst
-    
-    
+    def insertelements(self, x):
+        '''
+        This function will insert x number of new items into our array.
+        It automatically initializes the values store in each additional index
+        to -1. This means that we are at the representative element.
+        INPUT:
+            x: New number of elements to be inserted into our disjoint set.
+        OUTPUT:
+            x addition items in our array.
+        '''
+
+        self.array.extend([-1 for x in range(x)])
+
+    def union(self, set1, set2):
+        '''
+        When we union two sets, we first make sure that we have to root of 
+        the sets. Once we have the root we check which set is more negative (since
+        we are smart unioning by the size of each set). We also have to make sure
+        we collect the new size of the set by adding the contents of the two sets 
+        together. 
+        INPUT:
+            set1: First set
+            set2: Second set
+        OUTPUT:
+            Smart unioned set.
+        '''
+
+        set1 = self.find(set1)
+        set2 = self.find(set2)
+        newSize = self.array[set1] + self.array[set2]
+        if self.array[set1] <= self.array[set2]:
+            self.array[set2] = set1
+            self.array[set1] = newSize
+        else:
+            self.array[set1] = set2
+            self.array[set2] = newSize
+
+    def find(self, position):
+        '''
+        Find is simple. If at our index we have a negative vlaue, then we
+        are at the representative element. Otherwise, we have to search find
+        again with the index stored at the current indexes value in our array.
+        Additionally, when we are returning, we set the value of array[position] to 
+        be the index. This helps significantly compress the path and allows 
+        our runtime to be iterated log2() which is close enough to O(1) that we 
+        can assume that our find function runs in O(1) time.
+        INPUT:
+            position: Position of the element in our disjoint set we are trying to 
+                find the index of the representative element in our set.
+        OUTPUT:
+            Index of the representative element.
+        '''
+
+        if self.array[position] < 0:
+            return position
+        index = self.find(self.array[position])
+        self.array[position] = index
+        return index
+
+    def size(self, index):
+        '''
+        This function will return the size of our uptree or set. First
+        we find the index and then simply multiply by the -1 and return
+        INPUT:
+            index: index of the set we are looking at
+        OUTPUT:
+            size of the set or uptree
+        '''
+
+        return -1 * self.array[self.find(index)]
