@@ -6,7 +6,7 @@ Some of the functionality we see in a data structure such as this is makeset, fi
 In this implementation, I decided to union by size to ensure that the average runtime does not
 get worse. In addition, this class will implement a path compression algorithm when calling find
 to effectively make the height of the tree negligible. Disjoint sets are implemented using
-arrays, but are visualized at uptrees.
+arrays, but are visualized using uptrees.
 For example:
 We might have the collection of sets and representative elements as follows:
 c = {0,1,2,3}, {4,5,6}, {7,8,9}
@@ -28,12 +28,14 @@ would give us a structure like this
 3
 '''
 class DisjointSet():
-    def __init__(self, lst):
+    def __init__(self, lst = None):
         '''
         We only need to keep track of the array in a disjoint set. Each element 
         can be mapped to an integer.
         '''
         self.array = []
+        if lst:
+            self.array = lst
 
     def insertelements(self, x):
         '''
@@ -46,7 +48,7 @@ class DisjointSet():
             x addition items in our array.
         '''
 
-        self.array.extend([-1 for x in range(x)])
+        self.array.extend([-1 for __ in range(x)])
 
     def union(self, set1, set2):
         '''
@@ -64,6 +66,8 @@ class DisjointSet():
 
         set1 = self.find(set1)
         set2 = self.find(set2)
+        if set1 == set2:
+            return
         newSize = self.array[set1] + self.array[set2]
         if self.array[set1] <= self.array[set2]:
             self.array[set2] = set1
@@ -105,3 +109,36 @@ class DisjointSet():
         '''
 
         return -1 * self.array[self.find(index)]
+    
+    def upTree(self, index):
+        '''
+        This is a simple function that will show us the uptree for a 
+        given index or set.
+        INPUT:
+            index: Index of the set we want
+        OUTPUT:
+            String uptree
+        '''
+
+        string = ''
+        while self.array[index] > -1:
+            string = f'\n^\n|\n{index}' + string
+            index = self.array[index]
+        string = f'\n^\n|\n{index}' + string
+        return string
+
+    def __str__(self):
+        '''
+        Overloading the str operator to give us a string representation of 
+        our disjoint set. 
+        '''
+
+        return f'Size : {len(self)}\n\nArray : {self.array}'
+    
+    def __len__(self):
+        '''
+        Overloading the len operator to give us a length representation of 
+        our disjoint set. 
+        '''
+        
+        return len(self.array)
