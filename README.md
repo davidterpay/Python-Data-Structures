@@ -11,7 +11,7 @@ KDTrees -- K Dimensional Trees
 
 BTrees
 
-Disjoint Sets (in progress)
+Disjoint Sets
 
 Graphs (in progress)
 
