@@ -1,4 +1,4 @@
-from Linked_List import Node
+import Node
 '''
 DESCRIPTION:
 This is a simple doubly Linked List class written by David Terpay. I implemented
@@ -466,27 +466,23 @@ class LinkedList:
         Runtime : O(n) -- This runs in time proportional to n because we are 
         iterating through every node in our linked list. This costs O(n) time.
         '''
-
-        newSet = set(self.toList())
-        dictionary = {key: False for key in newSet}
-        self.length = len(newSet)
-        current = self.head
+        newset = set()
+        newset.add(self.head.getData())
+        current = self.head.getNext()
+        prev = self.head
         while current is not None:
-            data = current.getData()
-            if dictionary[data]: # This means we have already seen this point
+            if current.getData() in newset:
                 next = current.getNext()
-                prev = current.getPrev()
-                if prev is not None:
-                    prev.setNext(next)
-                if next is not None:
+                prev.setNext(next)
+                if next:
                     next.setPrev(prev)
+                else:
+                    self.tail = prev
+                current = next
             else:
-                dictionary[data] = True
-
-            if current.getNext() is None:
-                self.tail = current
-
-            current = current.getNext()
+                newset.add(current.getData())
+                prev = current
+                current = current.getNext()
 
     def mergesort(self, other):
         '''
@@ -747,3 +743,11 @@ class LinkedList:
                 string += '\n\tn | \t^ p\n\te | \t| r\n\tx | \t| e\n\tt V \t| v\n'
             num += 1
         return string
+
+
+dups = LinkedList()
+dups.stack(0, 10, 23, 4320, 10, 43, 10, 0, 2, 23)
+dups.mergesort(dups)
+print(dups.toList())
+dups.deleteDups()
+print(dups.toList())
