@@ -743,11 +743,3 @@ class LinkedList:
                 string += '\n\tn | \t^ p\n\te | \t| r\n\tx | \t| e\n\tt V \t| v\n'
             num += 1
         return string
-
-
-dups = LinkedList()
-dups.stack(0, 10, 23, 4320, 10, 43, 10, 0, 2, 23)
-dups.mergesort(dups)
-print(dups.toList())
-dups.deleteDups()
-print(dups.toList())
