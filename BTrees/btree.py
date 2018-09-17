@@ -1,8 +1,8 @@
-from btreenode import BTreeNode
-from datapair import DataPair
 import sys
 sys.path.append('../')
 from Queues.Queue import Queue
+from BTrees import btreenode
+from BTrees import datapair
 '''
 Written by David Terpay
 This is a BTree class that I built. BTrees are a type of tree but are not a 
@@ -37,7 +37,7 @@ class BTree():
         '''
 
         self.order = order
-        self.root = BTreeNode(self.order)
+        self.root = btreenode.BTreeNode(self.order)
 
     def insert(self, key, value):
         '''
@@ -49,10 +49,10 @@ class BTree():
         by the btree properties mentioned in the btree.py file.
         '''
 
-        datapair = DataPair(key, value)
-        self.__insert(self.root, datapair)
+        newdatapair = datapair.DataPair(key, value)
+        self.__insert(self.root, newdatapair)
         if self.root.isFull():
-            newRoot = BTreeNode(self.order)
+            newRoot = btreenode.BTreeNode(self.order)
             newRoot.children.append(self.root)
             self.split(newRoot, 0)
             self.root = newRoot
@@ -101,8 +101,8 @@ class BTree():
         #median element
         dataSplit = child.data[median]
 
-        left = BTreeNode(self.order, child.data[0:median])
-        right = BTreeNode(self.order, child.data[median + 1: len(child)])
+        left = btreenode.BTreeNode(self.order, child.data[0:median])
+        right = btreenode.BTreeNode(self.order, child.data[median + 1: len(child)])
         if not child.isLeaf():
             left.children = child.children[0 : midChild + 1]
             right.children = child.children[midChild + 1: len(child.children)]
@@ -152,7 +152,7 @@ class BTree():
             return node.data[found].getValue()
         else:
             if not node.isLeaf():
-                childIndex = node.binarySearch(0, len(node) - 1, DataPair(key, 'value'))
+                childIndex = node.binarySearch(0, len(node) - 1, datapair.DataPair(key, 'value'))
                 return self.__find(node.children[childIndex], key)
             else:
                 return None
@@ -177,3 +177,6 @@ class BTree():
                 node = queue.deque()
             string += '\n\n'
         return string
+tree = BTree(3)
+tree.insert(10,10)
+print(tree)
