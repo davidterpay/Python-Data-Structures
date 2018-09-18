@@ -15,7 +15,6 @@ class Vertex():
         '''
 
         self.__data = data
-        # self.__edges = LinkedList.LinkedList(listEdge)
     
     def getData(self):
         '''
@@ -30,21 +29,6 @@ class Vertex():
         '''
 
         return self.__data
-    
-    # def addEdge(self, data):
-    #     '''
-    #     Adding an edge to the linked list of edges. Remember this stores a pointer
-    #     to the actual object as seen in the linked list of edges in the graph class.
-    #     '''
-
-    #     self.__edges.addFront(data)
-    
-    # def degree(self):
-    #     '''
-    #     Returns the magnitude of the set of incident edges.
-    #     '''
-
-    #     return len(self.__edges)
     
     def __str__(self):
         string = f'Data: {self.__data}'

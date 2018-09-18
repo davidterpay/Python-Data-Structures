@@ -104,17 +104,32 @@ class Graph():
 
     def insertEdge(self, v1,v2,key):
         '''
+        The idea here is to create a new edge and append an empty node
+        to the linked list stored in the key of the vertices. Once you add
+        a new node, you make the edge point back to the exact location of each of
+        the vertices; likewise, we make the data within the node stored in the 
+        linked list of inicident edges point directly to the edge as stored
+        in the linked list of edges.
+        INPUT:
+            v1: Vertex 1 that will have a new edge
+            v2: Vertex 2 that will have a new edge
+            key: Key that will be stored in the edge
+        OUTPUT:
+            New edge
+        
         Runtime
         Implementation 1: O(1)
         Implementation 2: O(1)
         Implementation 3: O(1)
         '''
         
-        edge1 = Edge(v1, v2, key)
+        self.vertices[v1].addFront(None)
+        self.vertices[v2].addFront(None)
+        edge1 = Edge(v1, v2, self.vertices[v1].head, self.vertices[v2].head, key)
         self.edges.addFront(edge1)
-        self.vertices[v1].addFront(self.edges.head)
-        self.vertices[v2].addFront(self.edges.head)
-
+        self.vertices[v1].head.setData(edge1)
+        self.vertices[v2].head.setData(edge1)
+        
     def removeVertex(self, v):
         '''
         Runtime
@@ -122,7 +137,22 @@ class Graph():
         Implementation 2: O(1) + (n)
         Implementation 3: O(1) + O(deg(v))
         '''
-        pass
+        # need to implement a node removal in linked list class and
+        # remove from both nodes making sure we check both.
+        node = self.vertices[v]
+        while node:
+            currEdge = node.getData()
+            prev = currEdge.getPrev()
+            next = currEdge.getNext()
+            if prev:
+                prev.setNext(next)
+            else:
+                self.edges.head = next
+            if next:
+                next.setPrev(prev)
+            else:
+                self.edges.tail = prev
+
     def removeEdge(self, v1,v2):
         '''
         Runtime
@@ -148,9 +178,14 @@ class Graph():
         '''
         pass
     
-    def degree(self):
-        pass
+    def degree(self, key):
+        '''
+        This function returns the length of the set of incident edges to a given
+        vertex.
+        '''
     
+        return len(self.vertices[key])
+
     def __str__(self):
         '''
         String representation of our Graph
@@ -163,7 +198,7 @@ class Graph():
             if not edges:
                 edgestring = '[]'
             while edges:
-                edgestring += str(edges.getData().getData())
+                edgestring += str(edges.getData())
                 edges = edges.getNext()
                 if edges:
                     edgestring += ', '

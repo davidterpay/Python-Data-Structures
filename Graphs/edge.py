@@ -8,10 +8,13 @@ contain a few data items
     edges stored in the vertex edge list.
 '''
 class Edge():
-    def __init__(self, vertex1, vertex2, key):
+    def __init__(self, vertex1, vertex2, vertex1Pointer, vertex2Pointer, key):
         self.v1 = vertex1
+        self.v1Pointer = vertex1Pointer
         self.v2 = vertex2
+        self.v2Pointer = vertex1Pointer
         self.key = key
+
     def __str__(self):
         return str([str(self.v1),str(self.v2),f'Key: {self.key}'])
     
