@@ -122,13 +122,14 @@ class Graph():
         Implementation 2: O(1)
         Implementation 3: O(1)
         '''
-        
+
         self.vertices[v1].addFront(None)
         self.vertices[v2].addFront(None)
+        self.edges.addFront(None)
         edge1 = Edge(v1, v2, self.vertices[v1].head, self.vertices[v2].head, key)
-        self.edges.addFront(edge1)
-        self.vertices[v1].head.setData(edge1)
-        self.vertices[v2].head.setData(edge1)
+        self.vertices[v1].head.setData(self.edges.head)
+        self.vertices[v2].head.setData(self.edges.head)
+        self.edges.head.setData(edge1)
         
     def removeVertex(self, v):
         '''
@@ -137,30 +138,50 @@ class Graph():
         Implementation 2: O(1) + (n)
         Implementation 3: O(1) + O(deg(v))
         '''
-        # need to implement a node removal in linked list class and
-        # remove from both nodes making sure we check both.
-        node = self.vertices[v]
-        while node:
-            currEdge = node.getData()
-            prev = currEdge.getPrev()
-            next = currEdge.getNext()
-            if prev:
-                prev.setNext(next)
-            else:
-                self.edges.head = next
-            if next:
-                next.setPrev(prev)
-            else:
-                self.edges.tail = prev
+
+        while self.vertices[v].head:
+            data = self.vertices[v].head.getData().getData()
+            vertex1 = data.v1Pointer
+            vertex2 = data.v2Pointer
+            self.__removeElem(self.vertices[v].head.getData(), self.edges)
+            self.__removeElem(vertex1, self.vertices[data.v1])
+            self.__removeElem(vertex2, self.vertices[data.v2])
+        self.vertices.pop(v)
+            
+    def __removeElem(self, node, lnkdlst):
+        if node != lnkdlst.head:
+            lnkdlst.swap(lnkdlst.head, node)
+        lnkdlst.removeFront()
 
     def removeEdge(self, v1,v2):
         '''
         Runtime
         Implementation 1: O(1)
         Implementation 2: O(1)
-        Implementation 3: O(1)
+        Implementation 3: O(1) + O(min(deg(v1),deg(v2)))
         '''
-        pass
+        smaller = v2 if self.degree(v1) >= self.degree(v2) else v1
+        linked = self.vertices[smaller].head
+        while linked:
+            data = linked.getData().getData()
+            if self.__checkVertices(v1, v2, data.v1, data.v2):
+                vertex1 = data.v1Pointer
+                vertex2 = data.v2Pointer
+                self.__removeElem(linked.getData(), self.edges)
+                self.__removeElem(vertex1, self.vertices[v1])
+                self.__removeElem(vertex2, self.vertices[v2])
+            elif self.__checkVertices(v2, v1, data.v1, data.v2):
+                vertex1 = data.v1Pointer
+                vertex2 = data.v2Pointer
+                self.__removeElem(linked.getData(), self.edges)
+                self.__removeElem(vertex2, self.vertices[v1])
+                self.__removeElem(vertex1, self.vertices[v2])
+            linked = linked.getNext()
+        
+
+    def __checkVertices(self, v1, v2, vertex1, vertex2):
+        return (v1 == vertex1 and v2 == vertex2)
+
     def inicidentEdges(self, v):
         '''
         Runtime
@@ -168,11 +189,14 @@ class Graph():
         Implementation 2: O(n)
         Implementation 3: O(1) + O(deg(v))
         '''
-        pass
+
+        edges = list(map(lambda data: data.getData(), self.vertices[v].toList()))
+        return edges
+
     def areAdjacent(self, v1,v2):
         '''
         Runtime
-        Implementation 1: O(m) 
+        Implementation 1: O(m)
         Implementation 2: O(1)
         Implementation 3: O(1) + O(min(deg(v1), deg(v2)))
         '''
@@ -198,7 +222,7 @@ class Graph():
             if not edges:
                 edgestring = '[]'
             while edges:
-                edgestring += str(edges.getData())
+                edgestring += str(edges.getData().getData())
                 edges = edges.getNext()
                 if edges:
                     edgestring += ', '
@@ -208,10 +232,11 @@ class Graph():
 g = Graph()
 g.insertVertex(10)
 g.insertVertex(30)
-g.insertVertex(400)
+g.insertVertex(50)
 keys = list(g.vertices.keys())
-g.insertEdge(keys[0],keys[1],'hi')
-g.insertEdge(keys[0],keys[2],'doooope')
+g.insertEdge(keys[0], keys[1], 'removal')
+g.insertEdge(keys[2], keys[1], 'suppp')
 print(g)
-print('\n\n\n')
-print(g.edges)
+g.removeEdge(keys[0],keys[1])
+print('\n\n')
+print(g)

@@ -12,7 +12,7 @@ class Edge():
         self.v1 = vertex1
         self.v1Pointer = vertex1Pointer
         self.v2 = vertex2
-        self.v2Pointer = vertex1Pointer
+        self.v2Pointer = vertex2Pointer
         self.key = key
 
     def __str__(self):
