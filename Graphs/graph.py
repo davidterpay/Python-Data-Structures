@@ -177,7 +177,6 @@ class Graph():
                 self.__removeElem(vertex2, self.vertices[v1])
                 self.__removeElem(vertex1, self.vertices[v2])
             linked = linked.getNext()
-        
 
     def __checkVertices(self, v1, v2, vertex1, vertex2):
         '''
@@ -255,14 +254,3 @@ class Graph():
                     edgestring += ', '
             string += f'{key}\nEdges: {edgestring}\n\n'
         return string
-
-g = Graph()
-g.insertVertex(10)
-g.insertVertex(30)
-g.insertVertex(50)
-keys = list(g.vertices.keys())
-g.insertEdge(keys[0], keys[1], 'removal')
-g.insertEdge(keys[2], keys[1], 'suppp')
-print(g)
-print('\n\n')
-print(g.areAdjacent(keys[0], keys[2]))
