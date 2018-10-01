@@ -180,10 +180,29 @@ class Graph():
         
 
     def __checkVertices(self, v1, v2, vertex1, vertex2):
+        '''
+        This will return true if we have a match of the two vertices in the linked list
+        of edges and the two inputed vertices.
+        INPUT:
+            v1: First vertex we are checking
+            v2: Second vertex we are checking
+            vertex1: Pointer stored in the edge object
+            vertex2: Other pointer stored in the edge object
+        OUTPUT:
+            True if we have a match.
+        '''
+
         return (v1 == vertex1 and v2 == vertex2)
 
     def inicidentEdges(self, v):
         '''
+        This function will return all of the edges touching a inputed 
+        vertex.
+        INPUT:
+            v: Vertex we are finding all of the inicident edge for
+        OUTPUT:
+            List of incident edges to a given vertex
+        
         Runtime
         Implementation 1: O(1) + O(m)
         Implementation 2: O(n)
@@ -200,7 +219,15 @@ class Graph():
         Implementation 2: O(1)
         Implementation 3: O(1) + O(min(deg(v1), deg(v2)))
         '''
-        pass
+
+        smaller = v1 if self.degree(v1) <= self.degree(v2) else v2
+        linked = self.vertices[smaller].head
+        while linked:
+            data = linked.getData().getData()
+            if self.__checkVertices(v1, v2, data.v1, data.v2) or self.__checkVertices(v2, v1, data.v1, data.v2):
+                return True
+            linked = linked.getNext()
+        return False
     
     def degree(self, key):
         '''
@@ -237,6 +264,5 @@ keys = list(g.vertices.keys())
 g.insertEdge(keys[0], keys[1], 'removal')
 g.insertEdge(keys[2], keys[1], 'suppp')
 print(g)
-g.removeEdge(keys[0],keys[1])
 print('\n\n')
-print(g)
+print(g.areAdjacent(keys[0], keys[2]))
