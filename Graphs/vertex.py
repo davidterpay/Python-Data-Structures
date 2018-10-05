@@ -15,7 +15,22 @@ class Vertex():
         '''
 
         self.__data = data
+        self.__visited = False
     
+    def setVisited(self, var):
+        '''
+        Setter for encapsulated data
+        '''
+
+        self.__visited = var
+    
+    def getVisited(self):
+        '''
+        Getter for encapsulated data
+        '''
+
+        return self.__visited
+
     def getData(self):
         '''
         Getter for encapsulated data

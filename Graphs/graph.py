@@ -3,6 +3,8 @@ from edge import Edge
 import sys
 sys.path.append('../')
 from Linked_List import LinkedList
+from Stacks import Stack
+from Queues import Queue
 
 '''
 Written by David Terpay
@@ -62,7 +64,11 @@ points back to the position of the edge as stored in the linked list in the vert
 table. In short, this allows us to create a graph with given set of vertices and edges in 
 O(n) time. Additionally, insertion runs in O(1) time, remove runs in O(1) + O(deg(v)) which is 
 bound by O(n), are adjacent runs in the minimum of the degrees of the two vertices in question. Finally,
-incident edges runs in O(deg(v)) time.
+incident edges runs in O(deg(v)) time. If a graph is sparse, we should use an adjacency list.
+
+If you have a sparse graph, you should probably stick to an adjacency list or an edge list.
+However, if you have a dense graph, you really have to be looking at what functionality you will
+be using to determine which backend implementation to use.
 
 
 THIS CLASS WILL IMPLEMENT AN ADJACENCY LIST
@@ -82,6 +88,8 @@ class Graph():
 
         self.vertices = {}
         self.edges = LinkedList.LinkedList()
+        self.connectedComponents = 0
+        self.cycles = False
 
     def insertVertex(self, key):
         '''
@@ -257,7 +265,7 @@ class Graph():
             v1: First vertex
             v2: Second vertex
         OUTPUT:
-            True if adjacent; false otherwise
+            Returns data if adjacent; None otherwise
         Runtime
         Implementation 1: O(m)
         Implementation 2: O(1)
@@ -269,10 +277,30 @@ class Graph():
         while linked:
             data = linked.getData().getData()
             if self.__checkVertices(v1, v2, data.v1, data.v2) or self.__checkVertices(v2, v1, data.v1, data.v2):
-                return True
+                return data
             linked = linked.getNext()
-        return False
+        return None
     
+    def adjacentVertices(self, v):
+        '''
+        This function will return all of the adjacent vertices around a given vertex
+        v. This function will be helpful when we are doing BFS and DFS traversals 
+        of the graph.
+        INPUT:
+            v: Vertex query
+        OUTPUT:
+            List of adjacent vertices
+        '''
+
+        edges = self.inicidentEdges(v)
+        verts = []
+        for e in edges:
+            if e.v1 == v:
+                verts.append(e.v2)
+            else:
+                verts.append(e.v1)
+        return verts
+
     def degree(self, key):
         '''
         This function returns the length of the set of incident edges to a given
@@ -281,8 +309,89 @@ class Graph():
     
         return len(self.vertices[key])
 
+    def numConnectedComponents(self):
+        '''
+        This is returning the number of connected components in our graph.
+        All this means is that we might have a disjoint graph where some nodes
+        do not have a path between them. We keep track of this when we call traversals
+        DFS or BFS. Make sure to call the traversal before calling this function.
+        '''
+
+        return self.connectedComponents
+
+    def cyclesExist(self):
+        '''
+        This function is checking whether we have cycles in our graph. A cycle just means
+        that we have the same starting and ending point in a given path that we take 
+        in a graph. We keep track of this when we run the traversals. Make sure to run
+        the traversals before calling this function because otherwise you wil not 
+        get the result you want.
+        '''
+
+        return self.cycles
+
     def bfs(self):
-        pass
+        '''
+        A breadth first search works very similarly to a BFS in a 
+        binary tree. First we visit all of the children of a node before
+        visiting any of the grandchildren. In order to properly do the traversal,
+        we must first set all of the vertices as not visited and label all of
+        the edges as not visited as well. Once we do that we simply do a BFS on every single
+        node in our vertex list given that we have not yet visited the vertex.
+        '''
+
+        for v in self.vertices.keys():
+            v.setVisited(False)
+        for e in self.edges.toList():
+            e.visited = False
+            e.discovery = False
+        for v in self.vertices.keys():
+            if not v.getVisited():
+                self.connectedComponents += 1
+                self.__bfs(v)
+    
+    def __bfs(self, v):
+        '''
+        Once we initialize everything (set everything to unexplored), we need a queue
+        to help us visit the locations we need. The algorithm looks like this
+        1. Enqueue the first vertex
+        2. Report on it
+        3. While !q.isempty():
+            1. Dequeue
+            2. Report
+            3. Loop through the adjacent vertices
+                - Update the edges, mark the vertex as visited (if not yet visited); enqueue
+                - If visited, check if edge has been visited, if not mark the edge as a cross edge
+                    which means we have a cycle
+        
+        Remember, graph traversals can have any order we want. It all depends on the
+        starting point. 
+        Runtime - O(n + m) - This runtime is a little tricky to derive but I will try my best.
+        Since we have to enqueue every single vertex onto the queue at least once, we get O(n). However,
+        since we also have to visit every single adjacent vertex to a given vertex, which is equal to
+        def(v), we get 2m. We get 2m, by summing up all of the degrees of all of the nodes which we visit.
+        This finally gives us a runtime of O(n + 2m) = O(m + n). This is a very good run time because
+        we have to visit every single node and edge in this version of a breadth first search (traversal).
+        '''
+
+        queue = Queue.Queue()
+        v.setVisited(True)
+        queue.enque(v)
+        print(v)
+        while not queue.isEmpty():
+            vert = queue.deque()
+            for adjvert in self.adjacentVertices(vert):
+                edge = self.areAdjacent(adjvert, vert)
+                if not adjvert.getVisited():
+                    print(adjvert)
+                    adjvert.setVisited(True)
+                    edge.visited = True
+                    edge.discovery = True
+                    queue.enque(adjvert)
+                elif not edge.visited:
+                    self.cycles = True
+                    edge.visited = True
+                    edge.discovery = False
     
     def dfs(self):
         pass
@@ -301,7 +410,7 @@ class Graph():
 
     def floydWarshall(self):
         pass
-        
+
     def __str__(self):
         '''
         String representation of our Graph
@@ -320,3 +429,27 @@ class Graph():
                     edgestring += ', '
             string += f'{key}\nEdges: {edgestring}\n\n'
         return string
+g = Graph()
+g.insertVertex('A')
+g.insertVertex('B')
+g.insertVertex('C')
+g.insertVertex('D')
+g.insertVertex('E')
+g.insertVertex('F')
+g.insertVertex('G')
+g.insertVertex('H')
+keys = list(g.vertices.keys())
+g.insertEdge(keys[0], keys[1],'key')
+g.insertEdge(keys[0], keys[2], 'key')
+g.insertEdge(keys[0], keys[3], 'key')
+g.insertEdge(keys[1], keys[2], 'key')
+g.insertEdge(keys[1], keys[4], 'key')
+g.insertEdge(keys[4], keys[2], 'key')
+g.insertEdge(keys[4], keys[6], 'key')
+g.insertEdge(keys[7], keys[6], 'key')
+g.insertEdge(keys[7], keys[3], 'key')
+g.insertEdge(keys[2], keys[3], 'key')
+g.insertEdge(keys[5], keys[3], 'key')
+g.insertEdge(keys[2], keys[5], 'key')
+g.insertEdge(keys[5], keys[6], 'key')
+g.bfs()
