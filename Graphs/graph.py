@@ -133,6 +133,16 @@ class Graph():
         
     def removeVertex(self, v):
         '''
+        When we are removing a vertex, we have to ensure that we are also
+        removing all of the edges that belong to the vertex. We do so 
+        by finding the edge object in the linked list of edges, and
+        removing both of the pointers in the edge object (corresponding to
+        the two vertices belonging to the edge).
+        INPUT:
+            v: Vertex that we will remove
+        OUTPUT:
+            Removed vertex from graph
+
         Runtime
         Implementation 1: O(1) + O(m)
         Implementation 2: O(1) + (n)
@@ -149,17 +159,40 @@ class Graph():
         self.vertices.pop(v)
             
     def __removeElem(self, node, lnkdlst):
+        '''
+        This function takes in a node and the linked list the node is a part of,
+        and swaps the head of the linked list with the node. This allows us to
+        remove in constant time. 
+        INPUT:
+            node: Node in the linked list we are removing
+            lnkdlst: Linked List that the node belongs to
+        OUTPUT:
+            Node being removed from the linked list.
+        '''
+
         if node != lnkdlst.head:
             lnkdlst.swap(lnkdlst.head, node)
         lnkdlst.removeFront()
 
     def removeEdge(self, v1,v2):
         '''
+        This function will remove an edge that has two associated
+        vertices, v1 and v2. We first find the vertex with the smaller degree,
+        next we traverse through the linked list of edge pointers stored in the
+        key. Once we do that we check whether the actual edge object has pointers
+        pointing to v1 and v2. If so we simply remove, if not, we do nothing and 
+        keep traversing the linked list.
+        INPUT:
+            v1: First vertex
+            v2: Second vertex
+        OUTPUT:
+            Removed edge associated with v1 and v2
         Runtime
         Implementation 1: O(1)
         Implementation 2: O(1)
         Implementation 3: O(1) + O(min(deg(v1),deg(v2)))
         '''
+
         smaller = v2 if self.degree(v1) >= self.degree(v2) else v1
         linked = self.vertices[smaller].head
         while linked:
@@ -170,12 +203,14 @@ class Graph():
                 self.__removeElem(linked.getData(), self.edges)
                 self.__removeElem(vertex1, self.vertices[v1])
                 self.__removeElem(vertex2, self.vertices[v2])
+                return
             elif self.__checkVertices(v2, v1, data.v1, data.v2):
                 vertex1 = data.v1Pointer
                 vertex2 = data.v2Pointer
                 self.__removeElem(linked.getData(), self.edges)
                 self.__removeElem(vertex2, self.vertices[v1])
                 self.__removeElem(vertex1, self.vertices[v2])
+                return
             linked = linked.getNext()
 
     def __checkVertices(self, v1, v2, vertex1, vertex2):
@@ -213,6 +248,16 @@ class Graph():
 
     def areAdjacent(self, v1,v2):
         '''
+        This function checks if two vertices, v1 and v2, are adjacent.
+        We do so by finding the degree of the smaller vertex, and then traversing
+        through the linked list of edge pointers stored in the key. We check the edge
+        that the edge is pointing to and check whether the pointers stored inside the 
+        actual edge object point to v1 and v2. If so we return true.
+        INPUT:
+            v1: First vertex
+            v2: Second vertex
+        OUTPUT:
+            True if adjacent; false otherwise
         Runtime
         Implementation 1: O(m)
         Implementation 2: O(1)
@@ -236,6 +281,27 @@ class Graph():
     
         return len(self.vertices[key])
 
+    def bfs(self):
+        pass
+    
+    def dfs(self):
+        pass
+    
+    def minimumSpanningTree(self):
+        pass
+    
+    def mstKruskal(self):
+        pass
+
+    def mstPrim(self):
+        pass
+    
+    def dijkstra(self):
+        pass
+
+    def floydWarshall(self):
+        pass
+        
     def __str__(self):
         '''
         String representation of our Graph
