@@ -2,9 +2,10 @@ from vertex import Vertex
 from edge import Edge
 import sys
 sys.path.append('../')
-from Linked_List import LinkedList
-from Stacks import Stack
-from Queues import Queue
+from Linked_List import LinkedList # Used in backend adjacency list impl.
+from Stacks import Stack # Used in DFS traversal;
+from Queues import Queue # Used in BFS traversal
+from Disjoint_Sets import disjointset # Used in minimum spanning trees
 
 '''
 Written by David Terpay
@@ -330,6 +331,18 @@ class Graph():
 
         return self.cycles
 
+    def initialize(self):
+        '''
+        This function will initialize our vertices
+        and edges so that we can properly traverse the entire graph
+        '''
+
+        for v in self.vertices.keys():
+            v.setVisited(False)
+        for e in self.edges.toList():
+            e.visited = False
+            e.discovery = False
+
     def bfs(self):
         '''
         A breadth first search works very similarly to a BFS in a 
@@ -340,11 +353,7 @@ class Graph():
         node in our vertex list given that we have not yet visited the vertex.
         '''
 
-        for v in self.vertices.keys():
-            v.setVisited(False)
-        for e in self.edges.toList():
-            e.visited = False
-            e.discovery = False
+        self.initialize()
         for v in self.vertices.keys():
             if not v.getVisited():
                 self.connectedComponents += 1
@@ -364,6 +373,11 @@ class Graph():
                 - If visited, check if edge has been visited, if not mark the edge as a cross edge
                     which means we have a cycle
         
+        A BFS will give us the shortest path in terms of number of edges. But it has to be from the starting
+        point to a final point cant be two points in between. In addition, the discovery edges that are made by
+        the DFS produce a spanning tree. A cross edge in BFS will only change the distance from the root 
+        by a maximum of one.
+
         Remember, graph traversals can have any order we want. It all depends on the
         starting point. 
         Runtime - O(n + m) - This runtime is a little tricky to derive but I will try my best.
@@ -394,10 +408,63 @@ class Graph():
                     edge.discovery = False
     
     def dfs(self):
-        pass
+        '''
+        A depth first search works very similarly to a DFS in a 
+        binary tree. We want to visit as deep into the graph as possible. In order 
+        to properly do the traversal, we must first set all of the vertices as not visited 
+        and label all of the edges as not visited as well. Once we do that 
+        we simply do a DFS on every single node in our vertex list given that we have 
+        not yet visited the vertex.
+        '''
+
+        self.initialize()
+        for v in self.vertices.keys():
+            if not v.getVisited():
+                self.connectedComponents += 1
+                self.__dfs(v)
     
-    def minimumSpanningTree(self):
-        pass
+    def __dfs(self,v):
+        '''
+        Once we initialize everything (set everything to unexplored), we need a stack
+        to help us visit the locations we need. The algorithm looks like this
+        1. push the first vertex
+        2. Report on it
+        3. While !stack.isempty():
+            1. pop
+            2. Report
+            3. Loop through the adjacent vertices
+                - Update the edges, mark the vertex as visited (if not yet visited); push
+                - If visited, check if edge has been visited, if not mark the edge as a back edge
+                    which means we have a cycle
+
+        Remember, graph traversals can have any order we want. It all depends on the
+        starting point. 
+        Runtime - O(n + m) - This runtime is a little tricky to derive but I will try my best.
+        Since we have to push every single vertex onto the queue at least once, we get O(n). However,
+        since we also have to visit every single adjacent vertex to a given vertex, which is equal to
+        def(v), we get 2m. We get 2m, by summing up all of the degrees of all of the nodes which we visit.
+        This finally gives us a runtime of O(n + 2m) = O(m + n). This is a very good run time because
+        we have to visit every single node and edge in this version of a breadth first search (traversal).
+        '''
+
+        v.setVisited(True)
+        stack = Stack.Stack()
+        stack.push(v)
+        print(v)
+        while not stack.isEmpty():
+            vert = stack.pop()
+            for adjvert in self.adjacentVertices(vert):
+                e = self.areAdjacent(vert, adjvert)
+                if not adjvert.getVisited():
+                    print(adjvert)
+                    adjvert.setVisited(True)
+                    e.visited = True
+                    e.discovery = True
+                    stack.push(adjvert)
+                elif not e.visited:
+                    self.cycles = True
+                    e.visited = True
+                    e.discovery = False
     
     def mstKruskal(self):
         pass
@@ -438,6 +505,7 @@ g.insertVertex('E')
 g.insertVertex('F')
 g.insertVertex('G')
 g.insertVertex('H')
+g.insertVertex('I')
 keys = list(g.vertices.keys())
 g.insertEdge(keys[0], keys[1],'key')
 g.insertEdge(keys[0], keys[2], 'key')
@@ -452,4 +520,4 @@ g.insertEdge(keys[2], keys[3], 'key')
 g.insertEdge(keys[5], keys[3], 'key')
 g.insertEdge(keys[2], keys[5], 'key')
 g.insertEdge(keys[5], keys[6], 'key')
-g.bfs()
+g.dfs()
