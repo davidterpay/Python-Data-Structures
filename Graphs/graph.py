@@ -1,3 +1,5 @@
+from edge import Edge
+from vertex import Vertex
 import sys
 sys.path.append('../')
 from Linked_List import LinkedList # Used in backend adjacency list impl.
@@ -5,8 +7,6 @@ from Stacks import Stack # Used in DFS traversal
 from Queues import Queue # Used in BFS traversal
 from Disjoint_Sets import disjointset # Used in minimum spanning trees
 from Heaps import heap # Used in minimum spanning trees
-from Graphs.edge import Edge
-from Graphs.vertex import Vertex
 
 '''
 Written by David Terpay
@@ -111,8 +111,11 @@ class Graph():
 
         vert = Vertex(key)
         self.vertices[vert] = LinkedList.LinkedList()
+    
+    def __createdVertexInsertion(self, v):
+        self.vertices[v] = LinkedList.LinkedList()
 
-    def insertEdge(self, v1,v2,key):
+    def insertEdge(self, v1, v2, key, weight = 0):
         '''
         The idea here is to create a new edge and append an empty node
         to the linked list stored in the key of the vertices. Once you add
@@ -139,6 +142,7 @@ class Graph():
         edge1 = Edge(v1, v2, self.vertices[v1].head, self.vertices[v2].head, key)
         self.vertices[v1].head.setData(self.edges.head)
         self.vertices[v2].head.setData(self.edges.head)
+        edge1.weight = weight
         self.edges.head.setData(edge1)
         
     def removeVertex(self, v):
@@ -476,12 +480,28 @@ class Graph():
             # else make the edge not discovery but visited
         # forest = disjointset.DisjointSet() # building a forest of disjoint sets to hold our vertices
         # forest.insertelements([v for v in self.vertices.keys()])
-        forest = disjointset.DisjointSet(self.vertices.keys())
-        edgeWeights = heap.Heap() #priority queue for our impl. of sorting edges.
-        edgeWeights.buildHeap(self.edges.toList())
         minimumSpanningTree = Graph()
-        while len(minimumSpanningTree.edges) < n - 1:
-            
+        forest = disjointset.DisjointSet(self.vertices.keys())
+        edgeWeights = heap.Heap() # priority queue for our impl. of sorting edges.
+        edgeWeights.buildHeap(self.edges.toList())
+        while len(minimumSpanningTree.edges) < (len(self.vertices.keys()) - 1):
+            edge = edgeWeights.remove()
+            index1 = index2 = 0
+            # Room for optimization
+            for index, value in enumerate(forest.array):
+                if value.data == edge.v1:
+                    index1 = index
+                elif value.data == edge.v2:
+                    index2 = index
+            if forest.find(index1) != forest.find(index2):
+                forest.union(index1, index2)
+                if not edge.v1 in minimumSpanningTree.vertices.keys():
+                    minimumSpanningTree.__createdVertexInsertion(edge.v1)
+                if not edge.v2 in minimumSpanningTree.vertices.keys():
+                    minimumSpanningTree.__createdVertexInsertion(edge.v2)
+                minimumSpanningTree.insertEdge(edge.v1, edge.v2, edge.key, edge.weight)
+        return minimumSpanningTree
+
 
 
     def mstPrim(self):
@@ -520,19 +540,20 @@ g.insertVertex('E')
 g.insertVertex('F')
 g.insertVertex('G')
 g.insertVertex('H')
-g.insertVertex('I')
+# g.insertVertex('I')
 keys = list(g.vertices.keys())
-g.insertEdge(keys[0], keys[1],'key')
-g.insertEdge(keys[0], keys[2], 'key')
-g.insertEdge(keys[0], keys[3], 'key')
-g.insertEdge(keys[1], keys[2], 'key')
-g.insertEdge(keys[1], keys[4], 'key')
-g.insertEdge(keys[4], keys[2], 'key')
-g.insertEdge(keys[4], keys[6], 'key')
-g.insertEdge(keys[7], keys[6], 'key')
-g.insertEdge(keys[7], keys[3], 'key')
-g.insertEdge(keys[2], keys[3], 'key')
-g.insertEdge(keys[5], keys[3], 'key')
-g.insertEdge(keys[2], keys[5], 'key')
-g.insertEdge(keys[5], keys[6], 'key')
-print(g)
+g.insertEdge(keys[0], keys[1],'key', 50)
+g.insertEdge(keys[0], keys[2], 'key', 100)
+g.insertEdge(keys[0], keys[3], 'key', 3)
+g.insertEdge(keys[1], keys[2], 'key', 14)
+g.insertEdge(keys[1], keys[4], 'key', 20)
+g.insertEdge(keys[4], keys[2], 'key', 9)
+g.insertEdge(keys[4], keys[6], 'key', 11)
+g.insertEdge(keys[7], keys[6], 'key', 12)
+g.insertEdge(keys[7], keys[3], 'key', 10)
+g.insertEdge(keys[2], keys[3], 'key', 7)
+g.insertEdge(keys[5], keys[3], 'key', 3)
+g.insertEdge(keys[2], keys[5], 'key', 1)
+g.insertEdge(keys[5], keys[6], 'key', 130)
+minspantree = g.mstKruskal()
+print(minspantree)
