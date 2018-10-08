@@ -1,6 +1,7 @@
 import sys
 sys.path.append('../')
 from Linked_List import LinkedList
+import math
 '''
 Written by David Terpay
 This is a class that will represent our vertex. 
@@ -15,6 +16,8 @@ class Vertex():
         '''
 
         self.__data = data
+        self.predecessor = None
+        self.weight = math.inf
         self.__visited = False
     
     def setVisited(self, var):
@@ -45,6 +48,12 @@ class Vertex():
 
         return self.__data
     
+    def __lt__(self, other):
+        return self.weight < other.weight
+
+    def __gt__(self, other):
+        return self.weight > other.weight
+
     def __str__(self):
         string = f'Data: {self.__data}'
         return string

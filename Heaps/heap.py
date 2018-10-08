@@ -264,7 +264,7 @@ class Heap():
 
         return not self.array[1]
 
-    def buildHeap(self, lst):
+    def buildHeap(self, lst = None):
         '''
         Builds a heap from an existing list of data.
         Option 1: sort the array --> O(nlg(n)) if using mergesort, etc.
@@ -287,8 +287,9 @@ class Heap():
         There is a proof of induction of this that can be found online.
         '''
 
-        self.array.extend(lst)
-        self.size = len(lst)
+        if lst:
+            self.array.extend(lst)
+            self.size = len(lst)
         height = 0
         while pow(2, height + 1) - 1 < self.size:
             height += 1

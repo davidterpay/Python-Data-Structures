@@ -7,6 +7,7 @@ from Stacks import Stack # Used in DFS traversal
 from Queues import Queue # Used in BFS traversal
 from Disjoint_Sets import disjointset # Used in minimum spanning trees
 from Heaps import heap # Used in minimum spanning trees
+import math
 
 '''
 Written by David Terpay
@@ -73,7 +74,7 @@ However, if you have a dense graph, you really have to be looking at what functi
 be using to determine which backend implementation to use.
 
 
-THIS CLASS WILL IMPLEMENT AN ADJACENCY LIST
+NOTE: THIS CLASS WILL IMPLEMENT AN ADJACENCY LIST
 '''
 
 class Graph():
@@ -484,34 +485,67 @@ class Graph():
         forest = disjointset.DisjointSet(self.vertices.keys())
         edgeWeights = heap.Heap() # priority queue for our impl. of sorting edges.
         edgeWeights.buildHeap(self.edges.toList())
+
         while len(minimumSpanningTree.edges) < (len(self.vertices.keys()) - 1):
             edge = edgeWeights.remove()
             index1 = index2 = 0
             # Room for optimization
+
             for index, value in enumerate(forest.array):
                 if value.data == edge.v1:
                     index1 = index
                 elif value.data == edge.v2:
                     index2 = index
+
             if forest.find(index1) != forest.find(index2):
                 forest.union(index1, index2)
                 if not edge.v1 in minimumSpanningTree.vertices.keys():
                     minimumSpanningTree.__createdVertexInsertion(edge.v1)
                 if not edge.v2 in minimumSpanningTree.vertices.keys():
                     minimumSpanningTree.__createdVertexInsertion(edge.v2)
+
                 minimumSpanningTree.insertEdge(edge.v1, edge.v2, edge.key, edge.weight)
+                
         return minimumSpanningTree
 
+    def mstPrim(self, v):
+        for v in self.vertices.keys():
+            v.predecessor = None
+            v.weight = math.inf
 
+        self.vertices[v].weight = 0
+        priorityQueue = heap.Heap()
+        priorityQueue.buildHeap(self.vertices.keys())
+        minimumSpanningTree = Graph()
 
-    def mstPrim(self):
-        pass
+        for __ in range(len(self.vertices)):
+            e = priorityQueue.remove()
+            minimumSpanningTree.__createdVertexInsertion(e)
+            if e.predecessor:
+                key = self.areAdjacent(e, e.predecessor).key
+                minimumSpanningTree.insertEdge(e, e.predecessor, key, e.weight)
+            for neighbor in self.adjacentVertices(e):
+                if not neighbor in minimumSpanningTree.vertices.keys():
+                    weight = self.areAdjacent(neighbor, e).weight
+                    if weight < neighbor.weight:
+                        neighbor.weight = weight
+                        neighbor.predecessor = e
+                        priorityQueue.buildHeap()
+        return minimumSpanningTree
     
     def dijkstra(self):
         pass
 
     def floydWarshall(self):
         pass
+    
+    def sumWeights(self):
+        minHeap = heap.Heap()
+        minHeap.buildHeap(self.edges.toList())
+        minSum = 0
+        while not minHeap.isEmpty():
+            minSum += minHeap.remove().weight
+        return minSum
 
     def __str__(self):
         '''
@@ -555,5 +589,8 @@ g.insertEdge(keys[2], keys[3], 'key', 7)
 g.insertEdge(keys[5], keys[3], 'key', 3)
 g.insertEdge(keys[2], keys[5], 'key', 1)
 g.insertEdge(keys[5], keys[6], 'key', 130)
-minspantree = g.mstKruskal()
-print(minspantree)
+kruskals = g.mstKruskal()
+prims = g.mstPrim(keys[0])
+print(prims)
+print(kruskals.sumWeights())
+print(prims.sumWeights())
