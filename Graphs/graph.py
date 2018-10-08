@@ -1,11 +1,12 @@
-from vertex import Vertex
-from edge import Edge
 import sys
 sys.path.append('../')
 from Linked_List import LinkedList # Used in backend adjacency list impl.
-from Stacks import Stack # Used in DFS traversal;
+from Stacks import Stack # Used in DFS traversal
 from Queues import Queue # Used in BFS traversal
 from Disjoint_Sets import disjointset # Used in minimum spanning trees
+from Heaps import heap # Used in minimum spanning trees
+from Graphs.edge import Edge
+from Graphs.vertex import Vertex
 
 '''
 Written by David Terpay
@@ -438,7 +439,8 @@ class Graph():
                     which means we have a cycle
 
         Remember, graph traversals can have any order we want. It all depends on the
-        starting point. 
+        starting point. In addition, a traversal will automatically create a minimum spanning tree.
+
         Runtime - O(n + m) - This runtime is a little tricky to derive but I will try my best.
         Since we have to push every single vertex onto the queue at least once, we get O(n). However,
         since we also have to visit every single adjacent vertex to a given vertex, which is equal to
@@ -467,7 +469,20 @@ class Graph():
                     e.discovery = False
     
     def mstKruskal(self):
-        pass
+        # sort the edges (using build heap)
+        # place all vertices in seperate disjoint sets
+        # for each edge:
+            # if vertices in edge are in seperate sets, union and make the edge a discovery edge
+            # else make the edge not discovery but visited
+        # forest = disjointset.DisjointSet() # building a forest of disjoint sets to hold our vertices
+        # forest.insertelements([v for v in self.vertices.keys()])
+        forest = disjointset.DisjointSet(self.vertices.keys())
+        edgeWeights = heap.Heap() #priority queue for our impl. of sorting edges.
+        edgeWeights.buildHeap(self.edges.toList())
+        minimumSpanningTree = Graph()
+        while len(minimumSpanningTree.edges) < n - 1:
+            
+
 
     def mstPrim(self):
         pass
@@ -520,4 +535,4 @@ g.insertEdge(keys[2], keys[3], 'key')
 g.insertEdge(keys[5], keys[3], 'key')
 g.insertEdge(keys[2], keys[5], 'key')
 g.insertEdge(keys[5], keys[6], 'key')
-g.dfs()
+print(g)

@@ -20,7 +20,14 @@ class Edge():
         self.key = key
         self.visited = False
         self.discovery = False
+        self.weight = 0
+    
+    def __lt__(self, other):
+        return self.weight < other.weight
+    
+    def __gt__(self, other):
+        return self.weight > other.weight
 
     def __str__(self):
-        return str([str(self.v1),str(self.v2),f'Key: {self.key}'])
+        return str([str(self.v1), str(self.v2), f'Key: {self.key}', f'Visited: {self.visited}', f'Discovery: {self.discovery}', f'Weight: {self.weight}'])
     

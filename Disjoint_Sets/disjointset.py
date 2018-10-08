@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../')
+from Disjoint_Sets import datanode
 '''
 Written by David Terpay
 Disjoint sets are a collection of sets that have a representative element within each set.
@@ -35,7 +38,7 @@ class DisjointSet():
         '''
         self.array = []
         if lst:
-            self.array = lst
+            self.array = [datanode.DataNode(data) for data in lst]
 
     def insertelements(self, x):
         '''
@@ -48,7 +51,7 @@ class DisjointSet():
             x addition items in our array.
         '''
 
-        self.array.extend([-1 for __ in range(x)])
+        self.array.extend([datanode.DataNode(None) for __ in range(x)])
 
     def union(self, set1, set2):
         '''
@@ -68,13 +71,13 @@ class DisjointSet():
         set2 = self.find(set2)
         if set1 == set2:
             return
-        newSize = self.array[set1] + self.array[set2]
-        if self.array[set1] <= self.array[set2]:
-            self.array[set2] = set1
-            self.array[set1] = newSize
+        newSize = self.array[set1].index + self.array[set2].index
+        if self.array[set1].index <= self.array[set2].index:
+            self.array[set2].index = set1
+            self.array[set1].index = newSize
         else:
-            self.array[set1] = set2
-            self.array[set2] = newSize
+            self.array[set1].index = set2
+            self.array[set2].index = newSize
 
     def find(self, position):
         '''
@@ -92,10 +95,10 @@ class DisjointSet():
             Index of the representative element.
         '''
 
-        if self.array[position] < 0:
+        if self.array[position].index < 0:
             return position
-        index = self.find(self.array[position])
-        self.array[position] = index
+        index = self.find(self.array[position].index)
+        self.array[position].index = index
         return index
 
     def size(self, index):
@@ -121,10 +124,10 @@ class DisjointSet():
         '''
 
         string = ''
-        while self.array[index] > -1:
-            string = f'\n^\n|\n{index}' + string
-            index = self.array[index]
-        string = f'\n^\n|\n{index}' + string
+        while self.array[index].index > -1:
+            string = f'\n^\n|\n{self.array[index].data}' + string
+            index = self.array[index].index
+        string = f'\n^\n|\n{self.array[index].data}' + string
         return string
 
     def __str__(self):

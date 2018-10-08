@@ -927,6 +927,3 @@ class BinarySearchTree():
         '''
 
         return self.toString(self.root,0)
-bst = BinarySearchTree()
-bst.insert(10)
-print(bst)
