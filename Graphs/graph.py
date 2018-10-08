@@ -114,9 +114,18 @@ class Graph():
         self.vertices[vert] = LinkedList.LinkedList()
     
     def __createdVertexInsertion(self, v):
+        '''
+        This is a helper function to simply inserted a given vertex into a 
+        hash table of existing vertices
+        INPUT:
+            v: Vertex that we are inserting
+        OUTPUT:
+            Graph with a new given vertex
+        '''
+
         self.vertices[v] = LinkedList.LinkedList()
 
-    def insertEdge(self, v1, v2, key, weight = 0):
+    def insertEdge(self, origin, destination, key, weight = 0):
         '''
         The idea here is to create a new edge and append an empty node
         to the linked list stored in the key of the vertices. Once you add
@@ -125,8 +134,8 @@ class Graph():
         linked list of inicident edges point directly to the edge as stored
         in the linked list of edges.
         INPUT:
-            v1: Vertex 1 that will have a new edge
-            v2: Vertex 2 that will have a new edge
+            origin: Vertex 1 that will have a new edge
+            destination: Vertex 2 that will have a new edge
             key: Key that will be stored in the edge
         OUTPUT:
             New edge
@@ -137,12 +146,12 @@ class Graph():
         Implementation 3: O(1)
         '''
 
-        self.vertices[v1].addFront(None)
-        self.vertices[v2].addFront(None)
+        self.vertices[origin].addFront(None)
+        self.vertices[destination].addFront(None)
         self.edges.addFront(None)
-        edge1 = Edge(v1, v2, self.vertices[v1].head, self.vertices[v2].head, key)
-        self.vertices[v1].head.setData(self.edges.head)
-        self.vertices[v2].head.setData(self.edges.head)
+        edge1 = Edge(origin, destination, self.vertices[origin].head, self.vertices[destination].head, key)
+        self.vertices[origin].head.setData(self.edges.head)
+        self.vertices[destination].head.setData(self.edges.head)
         edge1.weight = weight
         self.edges.head.setData(edge1)
         
@@ -169,8 +178,8 @@ class Graph():
             vertex1 = data.v1Pointer
             vertex2 = data.v2Pointer
             self.__removeElem(self.vertices[v].head.getData(), self.edges)
-            self.__removeElem(vertex1, self.vertices[data.v1])
-            self.__removeElem(vertex2, self.vertices[data.v2])
+            self.__removeElem(vertex1, self.vertices[data.origin])
+            self.__removeElem(vertex2, self.vertices[data.destination])
         self.vertices.pop(v)
             
     def __removeElem(self, node, lnkdlst):
@@ -189,59 +198,59 @@ class Graph():
             lnkdlst.swap(lnkdlst.head, node)
         lnkdlst.removeFront()
 
-    def removeEdge(self, v1,v2):
+    def removeEdge(self, origin,destination):
         '''
         This function will remove an edge that has two associated
-        vertices, v1 and v2. We first find the vertex with the smaller degree,
+        vertices, origin and destination. We first find the vertex with the smaller degree,
         next we traverse through the linked list of edge pointers stored in the
         key. Once we do that we check whether the actual edge object has pointers
-        pointing to v1 and v2. If so we simply remove, if not, we do nothing and 
+        pointing to origin and destination. If so we simply remove, if not, we do nothing and 
         keep traversing the linked list.
         INPUT:
-            v1: First vertex
-            v2: Second vertex
+            origin: First vertex
+            destination: Second vertex
         OUTPUT:
-            Removed edge associated with v1 and v2
+            Removed edge associated with origin and destination
         Runtime
         Implementation 1: O(1)
         Implementation 2: O(1)
-        Implementation 3: O(1) + O(min(deg(v1),deg(v2)))
+        Implementation 3: O(1) + O(min(deg(origin),deg(destination)))
         '''
 
-        smaller = v2 if self.degree(v1) >= self.degree(v2) else v1
+        smaller = destination if self.degree(origin) >= self.degree(destination) else origin
         linked = self.vertices[smaller].head
         while linked:
             data = linked.getData().getData()
-            if self.__checkVertices(v1, v2, data.v1, data.v2):
+            if self.__checkVertices(origin, destination, data.origin, data.destination):
                 vertex1 = data.v1Pointer
                 vertex2 = data.v2Pointer
                 self.__removeElem(linked.getData(), self.edges)
-                self.__removeElem(vertex1, self.vertices[v1])
-                self.__removeElem(vertex2, self.vertices[v2])
+                self.__removeElem(vertex1, self.vertices[origin])
+                self.__removeElem(vertex2, self.vertices[destination])
                 return
-            elif self.__checkVertices(v2, v1, data.v1, data.v2):
+            elif self.__checkVertices(destination, origin, data.origin, data.destination):
                 vertex1 = data.v1Pointer
                 vertex2 = data.v2Pointer
                 self.__removeElem(linked.getData(), self.edges)
-                self.__removeElem(vertex2, self.vertices[v1])
-                self.__removeElem(vertex1, self.vertices[v2])
+                self.__removeElem(vertex2, self.vertices[origin])
+                self.__removeElem(vertex1, self.vertices[destination])
                 return
             linked = linked.getNext()
 
-    def __checkVertices(self, v1, v2, vertex1, vertex2):
+    def __checkVertices(self, origin, destination, vertex1, vertex2):
         '''
         This will return true if we have a match of the two vertices in the linked list
         of edges and the two inputed vertices.
         INPUT:
-            v1: First vertex we are checking
-            v2: Second vertex we are checking
+            origin: First vertex we are checking
+            destination: Second vertex we are checking
             vertex1: Pointer stored in the edge object
             vertex2: Other pointer stored in the edge object
         OUTPUT:
             True if we have a match.
         '''
 
-        return (v1 == vertex1 and v2 == vertex2)
+        return (origin == vertex1 and destination == vertex2)
 
     def inicidentEdges(self, v):
         '''
@@ -261,29 +270,29 @@ class Graph():
         edges = list(map(lambda data: data.getData(), self.vertices[v].toList()))
         return edges
 
-    def areAdjacent(self, v1,v2):
+    def areAdjacent(self, origin,destination):
         '''
-        This function checks if two vertices, v1 and v2, are adjacent.
+        This function checks if two vertices, origin and destination, are adjacent.
         We do so by finding the degree of the smaller vertex, and then traversing
         through the linked list of edge pointers stored in the key. We check the edge
         that the edge is pointing to and check whether the pointers stored inside the 
-        actual edge object point to v1 and v2. If so we return true.
+        actual edge object point to origin and destination. If so we return true.
         INPUT:
-            v1: First vertex
-            v2: Second vertex
+            origin: First vertex
+            destination: Second vertex
         OUTPUT:
             Returns data if adjacent; None otherwise
         Runtime
         Implementation 1: O(m)
         Implementation 2: O(1)
-        Implementation 3: O(1) + O(min(deg(v1), deg(v2)))
+        Implementation 3: O(1) + O(min(deg(origin), deg(destination)))
         '''
 
-        smaller = v1 if self.degree(v1) <= self.degree(v2) else v2
+        smaller = origin if self.degree(origin) <= self.degree(destination) else destination
         linked = self.vertices[smaller].head
         while linked:
             data = linked.getData().getData()
-            if self.__checkVertices(v1, v2, data.v1, data.v2) or self.__checkVertices(v2, v1, data.v1, data.v2):
+            if self.__checkVertices(origin, destination, data.origin, data.destination) or self.__checkVertices(destination, origin, data.origin, data.destination):
                 return data
             linked = linked.getNext()
         return None
@@ -302,10 +311,10 @@ class Graph():
         edges = self.inicidentEdges(v)
         verts = []
         for e in edges:
-            if e.v1 == v:
-                verts.append(e.v2)
+            if e.origin == v:
+                verts.append(e.destination)
             else:
-                verts.append(e.v1)
+                verts.append(e.origin)
         return verts
 
     def degree(self, key):
@@ -474,13 +483,31 @@ class Graph():
                     e.discovery = False
     
     def mstKruskal(self):
-        # sort the edges (using build heap)
-        # place all vertices in seperate disjoint sets
-        # for each edge:
-            # if vertices in edge are in seperate sets, union and make the edge a discovery edge
-            # else make the edge not discovery but visited
-        # forest = disjointset.DisjointSet() # building a forest of disjoint sets to hold our vertices
-        # forest.insertelements([v for v in self.vertices.keys()])
+        '''
+        Before we talk about the algorithm, lets touch base on what a MST exactly is once again. A
+        minimum spanning tree (MST) is a graph that is minimally connected. This means that we 
+        have created a path between any two nodes in our graph, have no cycles, and have a minimum
+        total weight. In order to build a MST using Kruskal's algorithm, we first put each vertex in 
+        a seperate set in a disjoint set. The purpose we do this is to check whether two vertices have
+        the same representative element. If they do, that means they are part of some minimum spanning 
+        tree for that labeled set. Next, we place all of the edges in a heap and build a minheap based
+        on the edge weights. This will allow for us to properly remove each edge and to have the
+        edges in correct order in linear time (build heap runs in O(n) time). Finally, we create a new
+        graph which will be the minimum spanning tree.
+        Once we do all of this we follow this algorithm:
+        # while edges < n - 1:
+            # for each edge:
+                # if vertices in edge are in seperate sets, union and make the edge a discovery edge
+                # else make the edge not discovery but visited
+        
+        Runtime - O(n + mlg(n)) - Since it takes O(n) time to build the disjoint set, O(m) time to 
+        build a minheap(partially sorted), O(m) time to loop through the while loop since we might have
+        to visit every edge, and finally O(lg(m)) = o(lg(n)) time to remove from a heap, we get a total runtime
+        of O(n + mlg(n)). The runtime of implementing this algorithm using a sorted array is the same runtime.
+        However, a minheap allows you to update edge weights with less of a cost and works better with a dense 
+        graph.
+        '''
+
         minimumSpanningTree = Graph()
         forest = disjointset.DisjointSet(self.vertices.keys())
         edgeWeights = heap.Heap() # priority queue for our impl. of sorting edges.
@@ -492,28 +519,62 @@ class Graph():
             # Room for optimization
 
             for index, value in enumerate(forest.array):
-                if value.data == edge.v1:
+                if value.data == edge.origin:
                     index1 = index
-                elif value.data == edge.v2:
+                elif value.data == edge.destination:
                     index2 = index
 
             if forest.find(index1) != forest.find(index2):
                 forest.union(index1, index2)
-                if not edge.v1 in minimumSpanningTree.vertices.keys():
-                    minimumSpanningTree.__createdVertexInsertion(edge.v1)
-                if not edge.v2 in minimumSpanningTree.vertices.keys():
-                    minimumSpanningTree.__createdVertexInsertion(edge.v2)
+                if not edge.origin in minimumSpanningTree.vertices.keys():
+                    minimumSpanningTree.__createdVertexInsertion(edge.origin)
+                if not edge.destination in minimumSpanningTree.vertices.keys():
+                    minimumSpanningTree.__createdVertexInsertion(edge.destination)
 
-                minimumSpanningTree.insertEdge(edge.v1, edge.v2, edge.key, edge.weight)
-                
+                minimumSpanningTree.insertEdge(edge.origin, edge.destination, edge.key, edge.weight)
+
         return minimumSpanningTree
 
     def mstPrim(self, v):
+        '''
+        Before we talk about the algorithm, lets touch base on what a MST exactly is once again. A
+        minimum spanning tree (MST) is a graph that is minimally connected. This means that we 
+        have created a path between any two nodes in our graph, have no cycles, and have a minimum
+        total weight. In order to build a MST using Prim's algorithm, we first give each vertex a weight
+        and a predecessor. Once we do this, we set the predecessor and weight in each vertex to be
+        none and +inf respectively. In Prim's algorithm, we need to have a starting vertex. We set the
+        weight of the starting vertex to 0. We then build a minheap to hold all of our vertices. We
+        also create a new graph object that will end up being our MST. Finally, here we start our 
+        algorithm. 
+        for each vertex in vertices:
+            min = queue.remove()
+            if predecessor:
+                Mst.addedge(vertex,predecessor)
+            for neighbor of vertex not in new graph:
+                if current_weight > weight_of_edge_connecting_vertex_neighbor:
+                    neighbor.weight = weight_of_edge_connecting_vertex_neighbor
+                    neighbor.predecessor = vertex
+
+        Runtime - O(n + mlg(n)) - We know that 'initializing' each of the vertices takes O(n) time.
+        Next, building a minHeap takes O(n) time. Once we enter the for loop and traverse all of the 
+        vertices, we have an outer runtime of O(n). On the inside of the for loop, we remove from
+        the minheap which takes O(lg(n)) time since we might have to heapify down.
+        So that small portion gives us a runtime of nlg(n). The other portion inside
+        of the for loop runs in time proportional to mlg(n) since we visit m edges, and 
+        building the heap again takes lg(n) time. Once we add these up, we get a total
+        runtime of O(mlg(n) + nlg(n)). Other implementations will get you better runtimes depending on
+        what you want from the graph and the type of graph you are expecting. Using a adjacency list and
+        minheap, we get this runtime. Using a adjacency matrix and a heap we also get the same runtime.
+        However, if we swapped the heap for an unsorted array, we get a runtime of O(n^2) for both
+        implementations of a graph. The best way to truely improve the runtime is to use a fibonacci heap,
+        this would reduce total runtime to O(nlg(n) + m).
+        '''
+
         for v in self.vertices.keys():
             v.predecessor = None
             v.weight = math.inf
 
-        self.vertices[v].weight = 0
+        v.weight = 0
         priorityQueue = heap.Heap()
         priorityQueue.buildHeap(self.vertices.keys())
         minimumSpanningTree = Graph()
@@ -533,13 +594,82 @@ class Graph():
                         priorityQueue.buildHeap()
         return minimumSpanningTree
     
-    def dijkstra(self):
-        pass
+    def dijkstra(self, start):
+        '''
+        Dijkstra's algorithm builds off of Prim's algorithm. The objective of Dijkstra's algorithm is
+        to find the shortest path between a starting node and a destination node. However, at
+        the end of running Dijkstra's algorithm, we find that we have the shortest path to 
+        every other single vertex in our graph. When I am throwing around the word shortest path, I am
+        referencing the smallest total edge weight path. Dijkstra's algorithm only changes one thing
+        from Prim's algorithm: instead of updating the weight to be edge weight, we total up 
+        the total distance or edge weight we have seen so far and add it to the vertex's weight. 
+        Dijkstra's algorithm is very useful because it handles both directed and undirected graphs. In
+        addition, Dijkstra's algorithm accounts will make the correct call when deciding between
+        many small weighted edges and one large weighted edge. One downside of Dijkstra's algorithm
+        is that it cannot handle neight weight cycles. Finally, if we are trying to find the path
+        from start to finish, we start with the destination node and work backwards using each 
+        node's predecessor.
+
+        INPUT:
+            start: Starting node we are finding
+        OUTPUT:
+            Shortest path to every single vertex in our graph from the starting point
+        
+        Runtime - O(n + mlg(n)) - We know that 'initializing' each of the vertices takes O(n) time.
+        Next, building a minHeap takes O(n) time. Once we enter the for loop and traverse all of the 
+        vertices, we have an outer runtime of O(n). On the inside of the for loop, we remove from
+        the minheap which takes O(lg(n)) time since we might have to heapify down.
+        So that small portion gives us a runtime of nlg(n). The other portion inside
+        of the for loop runs in time proportional to mlg(n) since we visit m edges, and 
+        building the heap again takes lg(n) time. Once we add these up, we get a total
+        runtime of O(mlg(n) + nlg(n)). Other implementations will get you better runtimes depending on
+        what you want from the graph and the type of graph you are expecting. Using a adjacency list and
+        minheap, we get this runtime. Using a adjacency matrix and a heap we also get the same runtime.
+        However, if we swapped the heap for an unsorted array, we get a runtime of O(n^2) for both
+        implementations of a graph. The best way to truely improve the runtime is to use a fibonacci heap,
+        this would reduce total runtime to O(nlg(n) + m).
+        '''
+
+        for v in self.vertices.keys():
+            v.weight = math.inf
+            v.predecessor = None
+        v.weight = 0
+        priorityQueue = heap.Heap() # heap to store our vertices
+        priorityQueue.buildHeap(self.vertices.keys())
+        sssp = Graph() # Single source shortest path (Dijkstras)
+        for __ in range(len(self.vertices.keys())):
+            vert = priorityQueue.remove()
+            sssp.__createdVertexInsertion(vert)
+            if vert.predecessor:
+                e = self.areAdjacent(vert.predecessor, vert)
+                key = e.key
+                weight = e.weight
+                sssp.insertEdge(vert.predecessor, vert, key, weight)
+            # Can add additional code to account for directed graphs.
+            for adjvert in self.adjacentVertices(vert):
+                if adjvert not in sssp.vertices.keys():
+                    existing_weight = self.areAdjacent(adjvert, vert).weight + vert.weight
+                    if existing_weight < adjvert.weight:
+                        adjvert.weight = existing_weight
+                        adjvert.predecessor = vert
+                        priorityQueue.buildHeap()
+        return sssp
 
     def floydWarshall(self):
         pass
     
     def sumWeights(self):
+        '''
+        This is a helper function that sums the weights of all the edges in our 
+        graph.
+        INPUT:
+            none
+        OUTPUT:
+            Sum of all the weights of all the edges
+        Runtime - O(m) - Since we have to sum up all of the edges, our algorithm runs 
+        in time proportional to O(m).
+        '''
+
         minHeap = heap.Heap()
         minHeap.buildHeap(self.edges.toList())
         minSum = 0
@@ -589,8 +719,6 @@ g.insertEdge(keys[2], keys[3], 'key', 7)
 g.insertEdge(keys[5], keys[3], 'key', 3)
 g.insertEdge(keys[2], keys[5], 'key', 1)
 g.insertEdge(keys[5], keys[6], 'key', 130)
-kruskals = g.mstKruskal()
-prims = g.mstPrim(keys[0])
-print(prims)
-print(kruskals.sumWeights())
-print(prims.sumWeights())
+sssp = g.dijkstra(keys[0])
+print(sssp.sumWeights())
+print(sssp)

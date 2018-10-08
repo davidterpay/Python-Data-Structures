@@ -13,9 +13,9 @@ contain a few data items
 '''
 class Edge():
     def __init__(self, vertex1, vertex2, vertex1Pointer, vertex2Pointer, key):
-        self.v1 = vertex1
+        self.origin = vertex1
         self.v1Pointer = vertex1Pointer
-        self.v2 = vertex2
+        self.destination = vertex2
         self.v2Pointer = vertex2Pointer
         self.key = key
         self.visited = False
@@ -29,5 +29,5 @@ class Edge():
         return self.weight > other.weight
 
     def __str__(self):
-        return str([str(self.v1), str(self.v2), f'Key: {self.key}', f'Visited: {self.visited}', f'Discovery: {self.discovery}', f'Weight: {self.weight}'])
+        return str([str(self.origin), str(self.destination), f'Key: {self.key}', f'Visited: {self.visited}', f'Discovery: {self.discovery}', f'Weight: {self.weight}'])
     
