@@ -656,7 +656,36 @@ class Graph():
         return sssp
 
     def floydWarshall(self):
-        pass
+        '''
+        Since Dijkstra's algorithm cannot account for negative edge weights, we need
+        an alternative algorithm that will run properly if we do need negative edge weights.
+        This algorithm is known as the Floyd Warshall Algorithm. The premise behind it is
+        to assign each of the edges between each vertice +inf to start off. Once we find 
+        a path that is shorter, we change the edge weight to the correct weight.
+        Since this algorithm does require a adjacency matrix implementation if we want to use
+        dynamic programming, we cannot implment it here. However, I will give a run through
+        of the algorithm that we would use. This algorithm will give us the shortest path
+        between any two vertices. Unlike Dijkstra's, we will have every single shortest path.
+        Floyd Warshall's algo checks whether the inclusion of certain eedges is better than the existing
+        path. It ignores adding an edge that already exists in our edge inputs. This helps us avoid 
+        cycles and self loops. After the first w for loop, we know that all paths are optimal with
+        the addition of k. Floyd Warshall's algorithm is a dynamic programming algo.
+        
+        Runtime - O(n ^ 3) - Since we do have to visit every single vertex, our runtime is O(n * n * n).
+        At first glance this runtime might seem bad since we have not focused on any algorithm whose
+        runtime is worse than ~ O(n ^2), the beauty of Floyd Warshall is the fact that it will
+        give us the shortest path between all vertices. 
+        '''
+
+        # 1. Label each self edge to be 0
+        # 2. Lavel non-existent edges to be +inf
+        # 3. Label all other edges with the corresponding edges weights
+        # Once we do that we move onto 3 nest for loops
+        # for (u : g):
+        #   for (v : g):
+        #       for (w : g):
+        #           if matrix[u,v] > d[u,w] + d[w,u]:
+        #               d[u,v] = d[u,w] + d[w,v]
     
     def sumWeights(self):
         '''
