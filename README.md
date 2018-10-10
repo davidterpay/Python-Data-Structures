@@ -13,7 +13,7 @@ BTrees
 
 Disjoint Sets
 
-Graphs (in progress)
+Graphs
 
 Binary Trees
 
