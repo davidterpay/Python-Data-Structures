@@ -670,7 +670,7 @@ class Graph():
         path. It ignores adding an edge that already exists in our edge inputs. This helps us avoid 
         cycles and self loops. After the first w for loop, we know that all paths are optimal with
         the addition of k. Floyd Warshall's algorithm is a dynamic programming algo.
-        
+
         Runtime - O(n ^ 3) - Since we do have to visit every single vertex, our runtime is O(n * n * n).
         At first glance this runtime might seem bad since we have not focused on any algorithm whose
         runtime is worse than ~ O(n ^2), the beauty of Floyd Warshall is the fact that it will
@@ -724,30 +724,3 @@ class Graph():
                     edgestring += ', '
             string += f'{key}\nEdges: {edgestring}\n\n'
         return string
-g = Graph()
-g.insertVertex('A')
-g.insertVertex('B')
-g.insertVertex('C')
-g.insertVertex('D')
-g.insertVertex('E')
-g.insertVertex('F')
-g.insertVertex('G')
-g.insertVertex('H')
-# g.insertVertex('I')
-keys = list(g.vertices.keys())
-g.insertEdge(keys[0], keys[1],'key', 50)
-g.insertEdge(keys[0], keys[2], 'key', 100)
-g.insertEdge(keys[0], keys[3], 'key', 3)
-g.insertEdge(keys[1], keys[2], 'key', 14)
-g.insertEdge(keys[1], keys[4], 'key', 20)
-g.insertEdge(keys[4], keys[2], 'key', 9)
-g.insertEdge(keys[4], keys[6], 'key', 11)
-g.insertEdge(keys[7], keys[6], 'key', 12)
-g.insertEdge(keys[7], keys[3], 'key', 10)
-g.insertEdge(keys[2], keys[3], 'key', 7)
-g.insertEdge(keys[5], keys[3], 'key', 3)
-g.insertEdge(keys[2], keys[5], 'key', 1)
-g.insertEdge(keys[5], keys[6], 'key', 130)
-sssp = g.dijkstra(keys[0])
-print(sssp.sumWeights())
-print(sssp)
