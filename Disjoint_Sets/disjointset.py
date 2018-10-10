@@ -1,6 +1,7 @@
 import sys
 sys.path.append('../')
 from Disjoint_Sets import datanode
+import random
 '''
 Written by David Terpay
 Disjoint sets are a collection of sets that have a representative element within each set.
@@ -51,7 +52,7 @@ class DisjointSet():
             x addition items in our array.
         '''
 
-        self.array.extend([datanode.DataNode(None) for __ in range(x)])
+        self.array.extend([datanode.DataNode(random.randint(-10,10)) for __ in range(x)])
 
     def union(self, set1, set2):
         '''
@@ -111,7 +112,7 @@ class DisjointSet():
             size of the set or uptree
         '''
 
-        return -1 * self.array[self.find(index)]
+        return -1 * self.array[self.find(index)].index
     
     def upTree(self, index):
         '''
@@ -136,7 +137,7 @@ class DisjointSet():
         our disjoint set. 
         '''
 
-        return f'Size : {len(self)}\n\nArray : {self.array}'
+        return f'Size : {len(self)}\n\nArray : {[data.data for data in self.array]}'
     
     def __len__(self):
         '''
