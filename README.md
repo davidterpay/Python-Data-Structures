@@ -1,7 +1,7 @@
 # Python-Data-Structures
 This is an on going project of mine - to code every major data structure in python. I will also add a C++ version sometime in the future. Over 5500+ lines of code and documentation. You can find jupyter notebook demos of every data structure in the folders.
 
-Full Data Structures + Algorithms course will be available on Udemy by Novemeber 25th.
+Full Data Structures + Algorithms course will be available on Udemy by December 20th.
 
 ### So far I have :
 
